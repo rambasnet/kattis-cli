@@ -235,14 +235,6 @@ def get_submission_status(
 _RED_COLOR = 31
 _GREEN_COLOR = 32
 
-BEAT_TIME = 0.25
-
-
-@contextmanager
-def beat(length: int = 1) -> None:
-    yield
-    time.sleep(length * BEAT_TIME)
-
 
 def parse_row_html(html: str) -> Tuple:
     """Parse row_html value from Kattis JASON response.

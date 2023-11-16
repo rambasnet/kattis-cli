@@ -1,6 +1,0 @@
-cpu_limit: 1 second
-difficulty: '3.9'
-mem_limit: 1024 MB
-problemid: orderlyclass
-source: 2017 ICPC Mid-Central Regional
-title: Orderly Class
