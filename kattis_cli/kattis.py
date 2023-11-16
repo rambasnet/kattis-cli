@@ -292,7 +292,7 @@ def parse_row_html(html: str) -> Tuple:
     return runtime, status, language, test_status, test_result
 
 
-def show_kattis_judgement(submission_url, cfg) -> None:
+def show_kattis_judgement(submission_url: str, cfg) -> None:
     """Show judgement from Kattis.
     """
     console = Console()
@@ -301,7 +301,7 @@ def show_kattis_judgement(submission_url, cfg) -> None:
     title += ':cat: Kattis Judgement Results :cat:[/]\n'
     status_id = 0
     with Live(console=console, screen=False,
-              refresh_per_second=20) as kattis_live:
+              refresh_per_second=10) as kattis_live:
         counter = 1
         while True:
             time.sleep(0.1)
@@ -341,12 +341,12 @@ WAITING...[/] 🤞🏻🤞🏻🤞🏻🤞🏻🤞🏻‍'
                 kattis_live.stop()
                 break
     if status_id == _ACCEPTED_STATUS:
-        console.print('👍🎆👍🎆👍🎆🎈🎈 [bold yellow]YAY!! \
-KEEP GOING...[/] 🎈🎈👍🎆👍🎆👍🎆')
+        verdict = '👍🎆👍🎆👍🎆🎈🎈 [bold yellow]YAY!! \
+KEEP GOING...[/] 🎈🎈👍🎆👍🎆👍🎆'
+        console.print()
     else:
-        console.print('💪🧐 [bold green]SORRY! \
-KEEP TRYING...[/] 🧐💪')
-
+        verdict = '💪🧐💪 [bold green]SORRY![/] 🧐💪🧐'
+    console.print(Align.center(verdict))
 
 def get_login_reply(cfg) -> requests.Response:
     """Log in to Kattis.

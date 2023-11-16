@@ -1,10 +1,14 @@
 """Module for language utilities.
 """
-from typing import List, Union
+from logging import root
+from typing import List, Union, Tuple, Any
+import sys
 import os
 import re
+import yaml
 from pathlib import Path
 from rich.console import Console
+
 
 
 LANGUAGE_GUESS = {
@@ -210,13 +214,13 @@ def valid_extension(file: str) -> bool:
 
 
 def find_problem_root_folder(
-    directory_path: Union[str, Path],
+    cur_dir_path: Union[str, Path],
     filename: str
 ) -> Path:
     """Find the root problem folder given a directory path and filename.
 
     Args:
-        directory_path (Union[str, Path]): String or Path
+        cur_dir_path (Union[str, Path]): String or Path
             object of directory path
         filename (str): filename to search for
             including wildcard pattern
@@ -237,19 +241,98 @@ def find_problem_root_folder(
             bool: True if path exists, False otherwise
         """
         for file in path.glob(filename):
-            name, _ = os.path.splitext(file.name)
-            # print(file.name, path.parts[-1], file.name[:len(ext[1])+1])
+            name, ext = os.path.splitext(file.name)
             folder_name = path.parts[-1]
-            if file.is_file() and name == folder_name:
+            #print(f'{name} {folder_name=} {name=} {ext=}')
+            if name == folder_name:
                 return True
+            # read yaml file
+            if ext == '.yaml':
+                with open(file, 'r', encoding='utf-8') as f:
+                    data = yaml.safe_load(f)
+                    if 'problemid' in data:
+                        return True
         return False
 
-    # print('path', directory_path, filename, file=sys.stderr)
-    cur_path = Path(directory_path)
+    #print(f'{cur_dir_path=} {filename=}')
+    if not filename:
+        filename = '.yaml'
+    cur_path = Path(cur_dir_path)
     if _check_file_match_folder(cur_path, filename):
         return cur_path
-    for parent in Path(directory_path).parents:
+    for parent in cur_path.parents:
         # print('parent', parent, file=sys.stderr)
         if _check_file_match_folder(parent, filename):
             return parent
     raise FileNotFoundError("Error: Problem root folder not found.")
+
+
+def update_args(problemid: str,
+                language: str,
+                mainclass: str,
+                files: List[str]) -> Any:
+    """Check if problemid, language, mainclass, and program files are valid.
+
+    Args:
+        problemid (str): problemid
+        language (str): programming language
+        mainclass (str): main class
+        files (List[str]): List of files
+        root_folder (str): root folder
+
+    Returns:
+        Tuple[str]: Update problemid, language, mainclass, and files
+    """
+
+    console = Console()
+    cur_folder = str(Path.cwd())
+    root_folder = Path.cwd()
+    console = Console()
+    # check if files are given
+    _files = files if files else []
+    if not _files:
+        _files = [
+            f for f in os.listdir(cur_folder) if valid_extension(f)]
+    if not _files:
+        console.print(
+            'No source file(s) found in the current folder!',
+            style='bold red')
+        exit(1)
+    # check if problemid is given
+    #if not problemid:
+    for f in _files:
+        try:
+            root_folder = find_problem_root_folder(
+                cur_folder, f.lower())
+            if not problemid:
+                problemid = root_folder.name
+            break
+        except FileNotFoundError:
+            # print(ex)
+            pass
+    if not problemid:
+        try:
+            root_folder = find_problem_root_folder(
+                cur_folder, '*.yaml')
+            problemid = root_folder.name
+        except FileNotFoundError:
+            console.print(f'''No problemid specified and I failed to guess
+problemid and root problem folder from filename(s) and cwd: {cur_folder}.''',
+        style='bold red')
+        sys.exit(1)
+    # check if language
+    if not language:
+        _, ext = os.path.splitext(os.path.basename(_files[0]))
+        # Guess language from files
+        language = guess_language(ext, _files)
+        if not language:
+            console.print(f'''\
+No language specified, and I failed to guess language from filename
+extension "{ext}"''')
+            sys.exit(1)
+    # check if valid language
+    valididate_language(language)
+    if not mainclass:
+        mainclass = guess_mainclass(language, _files)
+
+    return problemid, language, mainclass, _files, root_folder

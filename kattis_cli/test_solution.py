@@ -1,10 +1,12 @@
 """Tester module for KattisKitten.
 """
 
-from typing import Generator
+from typing import Generator, List
 from contextlib import contextmanager
 import glob
 import time
+import sys
+import os
 from pathlib import Path
 from rich.console import Console
 from rich.table import Table
@@ -13,9 +15,10 @@ from rich.live import Live
 from rich.align import Align
 from rich import box
 
-from . import download
+from .utils import utility
 from . import config
 from .utils import run_python
+from . import kattis
 
 BEAT_TIME = 0.04
 
@@ -34,41 +37,26 @@ def beat(length: int = 1) -> Generator[None, None, None]:
     time.sleep(length * BEAT_TIME)
 
 
-def test_solution(
+def test_samples(
         problemid: str,
-        language: str = 'python',
-        main_file: str = "",
-        show_result: bool = True) -> None:
+        language: str,
+        mainclass: str,
+        problem_root_folder: str,
+        files: List[str],
+        ) -> None:
     """Tests a problem by running all the .in files in
     the problem folder and comparing the output to the .ans files.
 
     Args:
         problem (str): problemid
-        log (bool, optional): Defaults to True.
-
-    Returns:
-        bool: True if all tests passed, False otherwise.
+        language (str): programming language
+        mainclass (str): main class
+        problem_root_folder (str): root folder where this problem is located
+        files (List[str]): List of files
     """
-
     console = Console()
-    filename = "*.yaml"
-    if problemid:
-        filename = f"{problemid}.yaml"
-
-    try:
-        root_problem_folder = download.find_problem_root_folder(
-            Path.cwd(), filename)
-    except FileNotFoundError:
-        root_problem_folder = Path.cwd().joinpath('cold')
-        console.print(
-            f"Problem [bold]{problemid}[/bold] not found.",
-            style="red")
-        # exit(1)
     config_data = config.parse_config(language)
-    console.print(root_problem_folder)
-    _ = config_data['file_extensions']
-    _ = config_data['kattis_name']
-    emoji = config_data['emoji']
+
     # console.print(extensions)
     # UI Table Header ---
 
@@ -79,53 +67,55 @@ def test_solution(
     table.box = box.SQUARE
     table_centered = Align.center(table)
 
-    # End Table Header ---
     # console.print(table)
 
+    if not mainclass:
+        mainclass = config_data['mainclass'].replace('<problemid>', problemid)
     # Find all .in files in the problem folder
-    if not main_file:
-        main_file = config_data['main_class'].replace('<problemid>', problemid)
-    main_class = root_problem_folder.joinpath(main_file)
-    # console.print(main_class)
-    in_files = glob.glob(f"{root_problem_folder}/data/*.in")
+    sep = os.path.sep
+    in_files = glob.glob(f"{problem_root_folder}{sep}data{sep}*.in")
+    if not in_files:
+        console.print(f"Sample data folder: {problem_root_folder}{sep}data", style="bold blue")
+        console.print("No sample input files found!", style="bold red")
+        exit(1)
     in_files.sort()
-    # console.print(in_files)
+    #console.print(in_files)
     count = 0
     total = len(in_files)
     console.clear()
-    title = f"[not italic bold blue]👷‍ Testing {main_file} "
-    title += f" using {emoji} {language} {emoji} 👷‍[/]"
+    title = f"[not italic bold blue]👷‍ Testing {mainclass} "
+    title += f" using {language} 👷‍[/]"
     compiler_error_checked = False
+    table.title = title
     with Live(table_centered, console=console,
-              screen=False, refresh_per_second=20):
+              screen=False, refresh_per_second=10):
         # with beat(10):
-        table.title = title
         # with beat(10):
         table.add_column(
             "Input File",
             justify="center",
             style="cyan",
-            no_wrap=True)
+            no_wrap=False)
         table.add_column(
             "Sample Input",
             justify="left",
             style="cyan",
-            no_wrap=True)
+            no_wrap=False)
         table.add_column(
             "Output File",
             justify="center",
             style="cyan",
-            no_wrap=True)
+            no_wrap=False)
         table.add_column(
             "Expected Output",
             justify="left",
             style="cyan",
-            no_wrap=True)
+            no_wrap=False)
         table.add_column(
             "Program Output",
             justify="left",
             style="cyan",
-            no_wrap=True)
+            no_wrap=False)
         table.add_column(
             "Result",
             justify="center",
@@ -141,8 +131,8 @@ def test_solution(
                 expected = f.read()
                 expected.replace(b'\r\n', b'\n')
             # Run the program
-            if language == 'python':
-                output = run_python.run(str(main_class), input_content)
+            if language.strip().lower() in ['python', 'python 3', 'python3']:
+                output = run_python.run(str(mainclass), input_content)
             else:
                 raise NotImplementedError(
                     f"Language {language} not supported.")
@@ -156,29 +146,33 @@ def test_solution(
                 result = "[bold red]❌[/bold red]"
 
             # UI Table Row ---
-            in_filename = in_file.split('/')[-1]
-            out_filename = out_file.split('/')[-1]
-            with beat(10):
-                table.add_row(in_filename,
-                              input_content.decode('utf-8'),
-                              out_filename,
-                              expected.decode('utf-8'),
-                              output,
-                              result)
+            in_filename = Path(in_file).parts[-1]
+            out_filename = Path(out_file).parts[-1]
+            #with beat(10):
+            time.sleep(0.1)
+            table.add_row(in_filename,
+                            input_content.decode('utf-8'),
+                            out_filename,
+                            expected.decode('utf-8'),
+                            output,
+                            result)
             if not compiler_error_checked:
                 compiler_error_checked = True
                 if output.startswith('** Syntax Error **'):
                     table.columns[4].style = 'bold red'
                     break
-            # End Table Row ---
-            # console.print(table)
-            # console.clear()
-
-    # console.clear()
-    # clear screen
-    # print('\033[H\033[J')
-    # console.print(table)
-    console.print(f"Total: {count}/{total} tests passed.")
-    suggestion = 'Keep trying!' if count < total else \
-        '🎉 Awesome... 🎉 Time to submit it to :cat: Kattis! :cat:'
-    console.print(suggestion)
+    
+    console.print(f"Sample data folder: {problem_root_folder}{sep}data", style="bold blue")
+    console.print(f'Total {total} input/output sample(s) found.')
+    console.print(f"{count}/{total} tests passed.")
+    if count < total:
+        console.print("Check the output columns for details.")
+        console.print("Keep trying!")
+    else:
+        console.print("Awesome... Time to submit it to :cat: Kattis! :cat:", style="bold green")
+        console.print("Submit to Kattis? y/n: ", style="bold blue", end="")
+        ans = input()
+        if ans.lower() == 'y':
+            kattis.submit_solution(files, problemid,
+                                   language, mainclass,
+                                   tag="", force=True)

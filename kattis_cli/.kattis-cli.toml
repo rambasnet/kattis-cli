@@ -2,20 +2,16 @@
 # Use TOML format https://toml.io/en/
 # Just copy the default section and modify the values according the language
 
-title = "Kattis-cli language configuration file."
+title = "Kattis-cli language configuration file for local testing."
 
 [default.language]
 compiler = "python3"
 compiler_flags = ""
-kattis_name = "Python 3"
 file_extensions = ["py", "py3"]
-emoji = ":snake:"
-main_class = "<problemid>.py"
+mainclass = "<problemid>.py"
 
-[python3]
+[Python 3]
 compiler = "python3"
-extension = ""
-kattis_name = "Python 3"
-file_extension = ["py", "py3"]
-emoji = ":snake:"
-main_class = "<problemid>.py"
+compiler_flags = ""
+file_extensions = ["py", "py3"]
+mainclass = "<problemid>.py"

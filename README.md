@@ -26,19 +26,26 @@ kattis <command> [options]
 ### Download a problem sample files and it's metadata
 
 ```bash
-kattis download <problem_id>
+kattis get <problem_id>
+```
+
+### Display problem metadata
+
+```bash
+cd <problem_id>
+kattis info
 ```
 
 ### Test a problem
 
 ```bash
 cd <problem_id>
-kattis test <problem_id>
+kattis test
 ```
 
 ### Submit a problem
 
 ```bash
 cd <problem_id>
-kattis submit <problem_id>
+kattis submit
 ```

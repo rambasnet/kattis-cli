@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kattis_cli"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Ram Basnet <rambasnet@gmail.com>"]
 description = "A command-line tool for Kattis"
 readme = "README.md"
@@ -27,3 +27,4 @@ lxml = "^4.9.3"
 
 [tool.poetry.scripts]
 kattis = 'kattis_cli.main:main'
+

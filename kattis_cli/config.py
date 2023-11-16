@@ -13,6 +13,9 @@ def parse_config(language: str = '') -> Any:
         Dict: config file
     """
     config_file = Path.home().joinpath(".kattis-cli.toml")
+    if not config_file.exists():
+        # check in current dir
+        config_file = Path.cwd().joinpath(".kattis-cli.toml")
     if config_file.exists():
         with open(config_file, "r", encoding='utf-8') as f:
             config_data = load(f)
