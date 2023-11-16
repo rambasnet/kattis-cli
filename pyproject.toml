@@ -26,4 +26,4 @@ tomlkit = "^0.12.2"
 lxml = "^4.9.3"
 
 [tool.poetry.scripts]
-kattis-cli = 'kattis_cli.main:main'
+kattis = 'kattis_cli.main:main'
