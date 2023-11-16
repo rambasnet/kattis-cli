@@ -1,0 +1,21 @@
+# This is the default configuration file for the Kattis CLI.
+# Use TOML format https://toml.io/en/
+# Just copy the default section and modify the values according the language
+
+title = "Kattis-cli language configuration file."
+
+[default.language]
+compiler = "python3"
+compiler_flags = ""
+kattis_name = "Python 3"
+file_extensions = ["py", "py3"]
+emoji = ":snake:"
+main_class = "<problemid>.py"
+
+[python3]
+compiler = "python3"
+extension = ""
+kattis_name = "Python 3"
+file_extension = ["py", "py3"]
+emoji = ":snake:"
+main_class = "<problemid>.py"

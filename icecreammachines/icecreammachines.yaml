@@ -1,0 +1,6 @@
+cpu_limit: 1 second
+difficulty: 1.4 - 7.6
+mem_limit: 1024 MB
+problemid: icecreammachines
+source: Nordic Olympiad in Informatics 2023
+title: Ice Cream Machines
