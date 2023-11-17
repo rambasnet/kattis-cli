@@ -19,12 +19,10 @@ import requests.cookies
 from rich.console import Console
 from rich.align import Align
 from rich.live import Live
-from bs4.element import Tag
 
 from kattis_cli.utils import utility
 from . import ui
-
-_DEFAULT_CONFIG = Path.home().joinpath('.kattisrc')
+from . import config
 
 _HEADERS = {'User-Agent': 'kattis-cli-submit'}
 
@@ -54,10 +52,6 @@ _STATUS_MAP = {
 }
 
 
-class ConfigError(Exception):
-    """Exception raised for errors in the config file."""
-
-
 def get_url(cfg: configparser.ConfigParser, option: str, default: str) -> str:
     """Get a URL from the config file
 
@@ -74,32 +68,6 @@ def get_url(cfg: configparser.ConfigParser, option: str, default: str) -> str:
     else:
         return f"https://{cfg.get('kattis', 'hostname')}/{default}"
 
-
-def get_config() -> configparser.ConfigParser:
-    """Returns a ConfigParser object for the .kattisrc file(s)
-    """
-    cfg = configparser.ConfigParser()
-    if os.path.exists(_DEFAULT_CONFIG):
-        cfg.read(_DEFAULT_CONFIG)
-
-    if not cfg.read([os.path.join(os.path.expanduser("~"), '.kattisrc'),
-                     os.path.join(os.path.dirname(sys.argv[0]), '.kattisrc')]):
-        raise ConfigError('''\
-I failed to read in a config file from your home directory or from the
-same directory as this script. To download a .kattisrc file please visit
-https://<kattis>/download/kattisrc
-
-The file should look something like this:
-[user]
-username: yourusername
-token: *********
-
-[kattis]
-hostname: <kattis>
-loginurl: https://<kattis>/login
-submissionurl: https://<kattis>/submit
-submissionsurl: https://<kattis>/submissions''')
-    return cfg
 
 
 def login(
@@ -153,7 +121,7 @@ def login_from_config(cfg: configparser.ConfigParser) -> requests.Response:
     except configparser.NoOptionError:
         pass
     if not password and not token:
-        raise ConfigError('''\
+        raise config.ConfigError('''\
 Your .kattisrc file appears corrupted. It must provide a token (or a
 KATTIS password).
 
@@ -236,7 +204,7 @@ def get_submission_url(submit_response: str,
         submission_id = m.group(1)
         return f'{submissions_url}/{submission_id}'
     else:
-        raise ConfigError('Could not find submission ID in response')
+        raise config.ConfigError('Could not find submission ID in response')
 
 
 def get_submission_status(
@@ -278,7 +246,7 @@ def parse_row_html(html: str) -> Any:
             runtime = td_cputime.text.strip().replace('&nbsp;', ' ')
         if not runtime:
             runtime = '❓ s'
-        div_status: Tag = tr_submission.findChild(
+        div_status = tr_submission.findChild(
             "div", {"class": "status"}, recursive=True)
         if div_status:
             status = div_status.text.strip()
@@ -377,7 +345,7 @@ def get_login_reply(cfg: configparser.ConfigParser) -> requests.Response:
 
     try:
         login_reply = login_from_config(cfg)
-    except ConfigError as exc:
+    except config.ConfigError as exc:
         console.print(exc)
         sys.exit(1)
     except requests.exceptions.RequestException as err:
@@ -411,8 +379,8 @@ def submit_solution(files: List[str], problemid: str,
     """
     console = Console()
     try:
-        cfg = get_config()
-    except ConfigError as exc:
+        cfg = config.get_kattisrc()
+    except config.ConfigError as exc:
         console.print(exc)
         sys.exit(1)
     login_reply = get_login_reply(cfg)
