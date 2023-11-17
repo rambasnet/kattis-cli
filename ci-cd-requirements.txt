@@ -1,3 +1,5 @@
 pytest
 mypy
 flake8
+types-PyYAML
+types-requests
