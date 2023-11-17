@@ -23,4 +23,4 @@ def parse_config(language: str = '') -> Any:
         raise FileNotFoundError(f"Config file {config_file} not found.")
     if language in config_data:
         return config_data[language]
-    return config_data['default']['language']
+    return config_data['default']

@@ -3,3 +3,5 @@ mypy
 flake8
 types-PyYAML
 types-requests
+types-beautifulsoup4
+types-pytest

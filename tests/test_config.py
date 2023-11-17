@@ -13,7 +13,7 @@ class TestConfig(unittest.TestCase):
     """Class to test the config module.
     """
 
-    def test_parse_config_filenot_found(self):
+    def test_parse_config_filenot_found(self) -> None:
         """Test parse_config function.
         """
         config_file = Path.home().joinpath(".kattis-cli.toml")
@@ -23,7 +23,7 @@ class TestConfig(unittest.TestCase):
         self.assertRaises(FileNotFoundError, config.parse_config, 'c++')
         self.assertRaises(FileNotFoundError, config.parse_config, 'java')
 
-    def test_parse_config_empty_file(self):
+    def test_parse_config_empty_file(self) -> None:
         """Test parse_config function.
         """
         config_file = Path.home().joinpath(".kattis-cli.toml")
@@ -33,7 +33,7 @@ class TestConfig(unittest.TestCase):
         self.assertRaises(KeyError, config.parse_config, 'java')
         config_file.unlink()
 
-    def test_parse_config_default(self):
+    def test_parse_config_default(self) -> None:
         """Test parse_config function.
         """
         dest_file = Path.home().joinpath(".kattis-cli.toml")

@@ -13,7 +13,7 @@ class TestDownload(unittest.TestCase):
     """Class to test the download module.
     """
 
-    def test_find_problem_root_folder_exception(self):
+    def test_find_problem_root_folder_exception(self) -> None:
         """Test get_problem_root_folder function.
         """
         self.assertRaises(
@@ -22,7 +22,7 @@ class TestDownload(unittest.TestCase):
             Path.cwd(),
             "*.yaml")
 
-    def test_get_problem_root_folder(self):
+    def test_get_problem_root_folder(self) -> None:
         """Test get_problem_root_folder function.
         """
         folder = 'hello'
@@ -33,7 +33,7 @@ class TestDownload(unittest.TestCase):
         self.assertEqual(root_folder, path)
         shutil.rmtree(path)
 
-    def test_create_problem_folder(self):
+    def test_create_problem_folder(self) -> None:
         """Test check_problem_folder function.
         """
         folder = 'cold'
@@ -46,7 +46,7 @@ class TestDownload(unittest.TestCase):
         self.assertTrue(Path.cwd().joinpath(folder).exists())
         shutil.rmtree(Path.cwd().joinpath(folder))
 
-    def test_make_soup(self):
+    def test_make_soup(self) -> None:
         """Test make_soup function.
         """
         self.assertRaises(
@@ -58,7 +58,7 @@ class TestDownload(unittest.TestCase):
             download.make_soup,
             "123blahblah")
 
-    def test_download_sample_data_exception(self):
+    def test_download_sample_data_exception(self) -> None:
         """Test download_sample_data.
         """
         problemid = '123blah'
@@ -74,7 +74,7 @@ class TestDownload(unittest.TestCase):
             problemid)
         shutil.rmtree(Path.cwd().joinpath(problemid))
 
-    def test_download_sample_data(self):
+    def test_download_sample_data(self) -> None:
         """Test download_sample_data.
         """
         problemid = 'cold'
@@ -83,7 +83,7 @@ class TestDownload(unittest.TestCase):
         self.assertTrue(folder.exists())
         shutil.rmtree(folder)
 
-    def test_load_meta_data(self):
+    def test_load_meta_data(self) -> None:
         """Test load_meta_data.
         """
         problemid = 'cold'

@@ -4,7 +4,7 @@
 
 title = "Kattis-cli language configuration file for local testing."
 
-[default.language]
+[default]
 compiler = "python3"
 compiler_flags = ""
 file_extensions = ["py", "py3"]

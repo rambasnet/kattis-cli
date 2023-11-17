@@ -4,7 +4,7 @@ Module for submitting solutions to Kattis
 https://github.com/Kattis/kattis-cli/blob/master/submit.py
 """
 
-from typing import Tuple, List, Dict
+from typing import List, Any
 import sys
 import os
 import re
@@ -15,14 +15,16 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 import requests
 import requests.exceptions
+import requests.cookies
 from rich.console import Console
 from rich.align import Align
 from rich.live import Live
+from bs4.element import Tag
 
 from kattis_cli.utils import utility
 from . import ui
 
-_DEFAULT_CONFIG = Path.home().joinpath('kattisrc')
+_DEFAULT_CONFIG = Path.home().joinpath('.kattisrc')
 
 _HEADERS = {'User-Agent': 'kattis-cli-submit'}
 
@@ -56,14 +58,24 @@ class ConfigError(Exception):
     """Exception raised for errors in the config file."""
 
 
-def get_url(cfg, option, default) -> str:
+def get_url(cfg: configparser.ConfigParser, option: str, default: str) -> str:
+    """Get a URL from the config file
+
+    Args:
+        cfg (configparser.ConfigParser): _description_
+        option (str): option name
+        default (str): default value
+
+    Returns:
+        str: _description_
+    """
     if cfg.has_option('kattis', option):
         return cfg.get('kattis', option)
     else:
-        return 'https://%s/%s' % (cfg.get('kattis', 'hostname'), default)
+        return f"https://{cfg.get('kattis', 'hostname')}/{default}"
 
 
-def get_config():
+def get_config() -> configparser.ConfigParser:
     """Returns a ConfigParser object for the .kattisrc file(s)
     """
     cfg = configparser.ConfigParser()
@@ -152,13 +164,13 @@ Please download a new .kattisrc file''')
 
 
 def submit(
-        submit_url,
-        cookies,
-        problem,
-        language,
-        files,
-        mainclass='',
-        tag=''):
+        submit_url: str,
+        cookies: requests.cookies.RequestsCookieJar,
+        problem: str,
+        language: str,
+        files: List[str],
+        mainclass: str = '',
+        tag: str = '') -> requests.Response:
     """Make a submission.
 
     The url_opener argument is an OpenerDirector object to use (as
@@ -191,7 +203,9 @@ def submit(
         headers=_HEADERS, timeout=10)
 
 
-def confirm_or_die(problem, language, files, mainclass, tag) -> None:
+def confirm_or_die(problem: str, language: str,
+                   files: List[str], mainclass: str,
+                   tag: str) -> None:
     """Confirm submission"""
     console = Console()
     console.clear()
@@ -211,7 +225,9 @@ def confirm_or_die(problem, language, files, mainclass, tag) -> None:
         sys.exit(1)
 
 
-def get_submission_url(submit_response, cfg):
+def get_submission_url(submit_response: str,
+                       cfg: configparser.ConfigParser
+                       ) -> str:
     """Get the URL of the submission from the HTML response
     """
     m = re.search(r'Submission ID: (\d+)', submit_response)
@@ -219,10 +235,14 @@ def get_submission_url(submit_response, cfg):
         submissions_url = get_url(cfg, 'submissionsurl', 'submissions')
         submission_id = m.group(1)
         return f'{submissions_url}/{submission_id}'
+    else:
+        raise ConfigError('Could not find submission ID in response')
 
 
 def get_submission_status(
-        submission_url: str, cookies: Dict[str, str]) -> Dict[str, str]:
+        submission_url: str,
+        cookies: requests.cookies.RequestsCookieJar
+) -> Any:
     """Get judge status for a submission"""
     reply = requests.get(
         submission_url + '?json',
@@ -235,7 +255,7 @@ _RED_COLOR = 31
 _GREEN_COLOR = 32
 
 
-def parse_row_html(html: str) -> Tuple:
+def parse_row_html(html: str) -> Any:
     """Parse row_html value from Kattis JASON response.
 
     Args:
@@ -250,7 +270,7 @@ def parse_row_html(html: str) -> Tuple:
     language = '❓'
     test_status = '❓/❓'
     soup = BeautifulSoup(html, 'html.parser')
-    tr_submission = soup.find("tr", {"data-submission-id": True})
+    tr_submission: Any = soup.find("tr", {"data-submission-id": True})
     # print(tr_submission)
     if tr_submission:
         td_cputime = tr_submission.findChild("td", {"data-type": "cpu"})
@@ -258,7 +278,7 @@ def parse_row_html(html: str) -> Tuple:
             runtime = td_cputime.text.strip().replace('&nbsp;', ' ')
         if not runtime:
             runtime = '❓ s'
-        div_status = tr_submission.findChild(
+        div_status: Tag = tr_submission.findChild(
             "div", {"class": "status"}, recursive=True)
         if div_status:
             status = div_status.text.strip()
@@ -291,7 +311,8 @@ def parse_row_html(html: str) -> Tuple:
     return runtime, status, language, test_status, test_result
 
 
-def show_kattis_judgement(submission_url: str, cfg) -> None:
+def show_kattis_judgement(submission_url: str,
+                          cfg: configparser.ConfigParser) -> None:
     """Show judgement from Kattis.
     """
     console = Console()
@@ -304,7 +325,8 @@ def show_kattis_judgement(submission_url: str, cfg) -> None:
         counter = 1
         while True:
             time.sleep(0.1)
-            result = get_submission_status(submission_url, login_reply.cookies)
+            result = get_submission_status(submission_url,
+                                           login_reply.cookies)
             if _DEBUG:
                 with open(f'{counter}.json', 'w', encoding='utf-8') as f:
                     json.dump(result, f, indent=4)
@@ -348,7 +370,7 @@ KEEP GOING...[/] 🎈🎈👍🎆👍🎆👍🎆'
     console.print(Align.center(verdict))
 
 
-def get_login_reply(cfg) -> requests.Response:
+def get_login_reply(cfg: configparser.ConfigParser) -> requests.Response:
     """Log in to Kattis.
     """
     console = Console()

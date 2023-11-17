@@ -6,7 +6,7 @@ from typing import Any
 import shutil
 
 
-def build(kwargs) -> Any:
+def build(kwargs: Any) -> Any:
     """_summary_
 
     Returns:
