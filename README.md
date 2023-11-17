@@ -8,6 +8,19 @@ Based on Official Kattis CLI: [https://github.com/Kattis/kattis-cli](https://git
 - Python 3.6+
 - [Kattis account](https://open.kattis.com/login/email)
 
+## Windows
+
+- Use Command Line or PowerShell
+- Make sure python is in your PATH
+- if you get codec error while running kattis-cli, run the following command in Command Prompt:
+
+```bash
+python --version
+chcp 65001
+```
+
+```bash
+
 ## Installation
 
 ```bash
@@ -51,7 +64,7 @@ kattis info
 
 - currently only supports Python 3
 - make sure python is in your PATH
-- make sure python files have shebang: !/usr/bin/env python3 as the first line
+- make sure python files have first line shebang: !/usr/bin/env python3
     - or have extensions .py3
 
 ```bash
