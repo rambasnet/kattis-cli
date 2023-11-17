@@ -49,10 +49,20 @@ def setup() -> None:
                 "Please enter your username or email",
                 password=False,
             )
-            password = Prompt.ask(
-                "Please enter your password",
-                password=True,
-            )
+            while True:
+                password = Prompt.ask(
+                    "Please enter your password",
+                    password=True,
+                )
+                if Confirm.ask("Want to see your password? ", default=False):
+                    console.print(f"You entered: {password}")
+                    if Confirm.ask("Is this correct? ", default=True):
+                        console.print(":rocket: Logging in...")
+                        break
+                else:
+                    console.print(":rocket: Logging in...")
+                    break
+
             response = kattis.login(_LOGIN_URL, username, password)
             if response.status_code == 200:
                 console.print(":rocket: Login successful!")
