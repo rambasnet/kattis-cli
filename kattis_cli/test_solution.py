@@ -14,8 +14,7 @@ from rich.live import Live
 from rich.align import Align
 from rich import box
 
-from . import config
-from .utils import run_python
+from .utils import run_python, utility
 from . import kattis
 
 BEAT_TIME = 0.04
@@ -53,7 +52,9 @@ def test_samples(
         files (List[str]): List of files
     """
     console = Console()
-    config_data = config.parse_config(language)
+    mainfile = utility.guess_mainfile(language, files, problemid)
+    # print(f"Main file: {mainfile}")
+    # config_data = config.parse_config(language)
 
     # console.print(extensions)
     # UI Table Header ---
@@ -66,9 +67,6 @@ def test_samples(
     table_centered = Align.center(table)
 
     # console.print(table)
-
-    if not mainclass:
-        mainclass = config_data['mainclass'].replace('<problemid>', problemid)
     # Find all .in files in the problem folder
     sep = os.path.sep
     in_files = glob.glob(f"{problem_root_folder}{sep}data{sep}*.in")
@@ -79,11 +77,11 @@ def test_samples(
         console.print("No sample input files found!", style="bold red")
         exit(1)
     in_files.sort()
-    # console.print(in_files)
+    #console.print(in_files)
     count = 0
     total = len(in_files)
     console.clear()
-    title = f"[not italic bold blue]👷‍ Testing {mainclass} "
+    title = f"[not italic bold blue]👷‍ Testing {mainfile} "
     title += f" using {language} 👷‍[/]"
     compiler_error_checked = False
     table.title = title
@@ -132,7 +130,7 @@ def test_samples(
                 expected.replace(b'\r\n', b'\n')
             # Run the program
             if language.strip().lower() in ['python', 'python 3', 'python3']:
-                output = run_python.run(str(mainclass), input_content)
+                output = run_python.run(str(mainfile), input_content)
             else:
                 raise NotImplementedError(
                     f"Language {language} not supported.")

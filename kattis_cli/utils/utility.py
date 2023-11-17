@@ -126,7 +126,10 @@ def is_python2(files: List[str]) -> bool:
     return False
 
 
-def guess_mainfile(language: str, files: List[str]) -> str:
+def guess_mainfile(
+        language: str,
+        files: List[str],
+        problemid: str = '') -> str:
     """Guess the main file.
 
     Args:
@@ -136,8 +139,13 @@ def guess_mainfile(language: str, files: List[str]) -> str:
     Returns:
         str: main file
     """
+    if len(files) == 1:
+        return files[0]
     for filename in files:
         if os.path.splitext(os.path.basename(filename))[0] in ['main', 'Main']:
+            return filename
+        if problemid and os.path.splitext(
+                os.path.basename(filename))[0] == problemid:
             return filename
     for filename in files:
         try:
@@ -318,7 +326,7 @@ def update_args(problemid: str,
             console.print(f'''No problemid specified and I failed to guess
 problemid and root problem folder from filename(s) and cwd: {cur_folder}.''',
                           style='bold red')
-        sys.exit(1)
+            sys.exit(1)
     # check if language
     if not language:
         _, ext = os.path.splitext(os.path.basename(_files[0]))
@@ -326,8 +334,8 @@ problemid and root problem folder from filename(s) and cwd: {cur_folder}.''',
         language = guess_language(ext, _files)
         if not language:
             console.print(f'''\
-No language specified, and I failed to guess language from filename
-extension "{ext}"''')
+No language specified, and I failed to guess language from 
+filename extension "{ext}"''')
             sys.exit(1)
     # check if valid language
     valididate_language(language)
