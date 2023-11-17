@@ -10,7 +10,7 @@ compiler_flags = ""
 file_extensions = ["py", "py3"]
 mainclass = "<problemid>.py"
 
-[Python 3]
+[Python3]
 compiler = "python3"
 compiler_flags = ""
 file_extensions = ["py", "py3"]

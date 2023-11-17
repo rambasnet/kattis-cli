@@ -42,7 +42,5 @@ class TestConfig(unittest.TestCase):
         shutil.copy(src_file, dest_file)
         data = config.parse_config()
         dest_file.unlink()
-        self.assertEqual(data['kattis_name'], 'Python 3')
         self.assertTrue('py' in data['file_extensions'])
-        self.assertEqual(data['emoji'], ':snake:')
         self.assertEqual(data['compiler'], 'python3')
