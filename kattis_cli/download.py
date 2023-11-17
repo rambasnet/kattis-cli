@@ -4,7 +4,7 @@
 
 # import sys
 import shutil
-from typing import Dict
+from typing import Any, Dict
 from pathlib import Path
 import requests
 import yaml
@@ -34,7 +34,7 @@ def create_problem_folder(problemid: str) -> Path:
     return root_problem_folder
 
 
-def load_problem_metadata(problemid: str = '') -> Dict:
+def load_problem_metadata(problemid: str = '') -> Dict[Any, Any]:
     """Load problem metadata from problem folder.
 
     Args:
@@ -43,7 +43,7 @@ def load_problem_metadata(problemid: str = '') -> Dict:
     Returns:
         Dict: problem metadata
     """
-    metadata: Dict = dict()
+    metadata: Dict[str, Any] = dict()
 
     filename = "*.yaml"
     if problemid:
@@ -89,7 +89,8 @@ def make_soup(problemid: str) -> BeautifulSoup:
         raise requests.exceptions.InvalidURL(f"Error: {response.status_code}")
 
 
-def _download_metadata(root_problem_folder: Path, problemid: str) -> Dict:
+def _download_metadata(root_problem_folder: Path,
+                       problemid: str) -> Dict[str, Any]:
     """Download problem metadata from Kattis and save them to problem folder.
     This function should only be called if the metadata file does not exist.
 

@@ -13,7 +13,7 @@ import kattis_cli.utils.utility as utility
 
 
 @click.group()
-def main():
+def main() -> None:
     """
     CLI for downloading, testing and submitting Kattis problems.
     """
