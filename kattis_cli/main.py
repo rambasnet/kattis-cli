@@ -12,6 +12,7 @@ import kattis_cli.kattis as kattis
 import kattis_cli.utils.utility as utility
 import kattis_cli.kattis_setup as kattis_setup
 
+
 @click.group()
 def main() -> None:
     """
@@ -100,6 +101,7 @@ def setup() -> None:
     """Setup Kattis CLI.
     """
     kattis_setup.setup()
+
 
 if __name__ == '__main__':
     main()

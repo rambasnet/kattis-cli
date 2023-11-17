@@ -10,8 +10,10 @@ from tomlkit import load
 
 _DEFAULT_CONFIG = Path.home().joinpath('.kattisrc')
 
+
 class ConfigError(Exception):
     """Exception raised for errors in the config file."""
+
 
 def parse_config(language: str = '') -> Any:
     """Parse config file.

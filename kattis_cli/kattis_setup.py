@@ -5,7 +5,6 @@ from pathlib import Path
 import requests
 from rich.console import Console
 from rich.prompt import Prompt, Confirm
-from rich import print as pprint
 from . import kattis
 from . import config
 
@@ -31,32 +30,35 @@ def check_kattisrc() -> bool:
         return False
     return True
 
+
 def setup() -> None:
     """Setup Kattis CLI.
     """
     console = Console()
     console.print(":cat: Welcome to Kattis CLI! :cat:", style="bold blue")
     if check_kattisrc():
-        console.print(":rocket: [bold blue]kattisrc already exists with valid token.[/]")
-        console.print(":rocket: [bold green]You are ready to use Kattis CLI.[/]")
+        console.print(
+            ":rocket: [bold blue]kattisrc already exists with valid token.[/]")
+        console.print(
+            ":rocket: [bold green]You are ready to use Kattis CLI.[/]")
         return
     console.print("You need your Kattis credentials for this setup.")
     if Confirm.ask("Do you have an account on Kattis?", default=True):
         while True:
             username = Prompt.ask(
-                        "Please enter your username or email",
-                        password=False,
-                    )
+                "Please enter your username or email",
+                password=False,
+            )
             password = Prompt.ask(
-                        "Please enter your password",
-                        password=True,
-                    )
+                "Please enter your password",
+                password=True,
+            )
             response = kattis.login(_LOGIN_URL, username, password)
             if response.status_code == 200:
                 console.print(":rocket: Login successful!")
                 # download kattisrc
                 cookies = response.cookies
-                #print(cookies)
+                # print(cookies)
                 res = requests.get(
                     _KATTISRCURL,
                     cookies=cookies,

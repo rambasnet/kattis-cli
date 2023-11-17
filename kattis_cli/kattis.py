@@ -11,7 +11,6 @@ import re
 import time
 import json
 import configparser
-from pathlib import Path
 from bs4 import BeautifulSoup
 import requests
 import requests.exceptions
@@ -67,7 +66,6 @@ def get_url(cfg: configparser.ConfigParser, option: str, default: str) -> str:
         return cfg.get('kattis', option)
     else:
         return f"https://{cfg.get('kattis', 'hostname')}/{default}"
-
 
 
 def login(
