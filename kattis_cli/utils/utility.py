@@ -334,7 +334,7 @@ problemid and root problem folder from filename(s) and cwd: {cur_folder}.''',
         language = guess_language(ext, _files)
         if not language:
             console.print(f'''\
-No language specified, and I failed to guess language from 
+No language specified, and I failed to guess language from
 filename extension "{ext}"''')
             sys.exit(1)
     # check if valid language

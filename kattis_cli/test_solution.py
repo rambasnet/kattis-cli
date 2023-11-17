@@ -77,7 +77,7 @@ def test_samples(
         console.print("No sample input files found!", style="bold red")
         exit(1)
     in_files.sort()
-    #console.print(in_files)
+    # console.print(in_files)
     count = 0
     total = len(in_files)
     console.clear()
