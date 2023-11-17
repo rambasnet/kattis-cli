@@ -5,6 +5,7 @@ Build script for the project.
 from typing import Any
 import shutil
 
+
 def build(kwargs) -> Any:
     """_summary_
 

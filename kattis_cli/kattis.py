@@ -12,7 +12,6 @@ import time
 import json
 import configparser
 from pathlib import Path
-from contextlib import contextmanager
 from bs4 import BeautifulSoup
 import requests
 import requests.exceptions
@@ -347,6 +346,7 @@ KEEP GOING...[/] 🎈🎈👍🎆👍🎆👍🎆'
     else:
         verdict = '💪🧐💪 [bold green]SORRY![/] 🧐💪🧐'
     console.print(Align.center(verdict))
+
 
 def get_login_reply(cfg) -> requests.Response:
     """Log in to Kattis.

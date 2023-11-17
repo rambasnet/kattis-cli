@@ -1,14 +1,13 @@
 """Module for language utilities.
 """
-from logging import root
-from typing import List, Union, Tuple, Any
+
+from typing import List, Union, Any
 import sys
 import os
 import re
-import yaml
 from pathlib import Path
+import yaml
 from rich.console import Console
-
 
 
 LANGUAGE_GUESS = {
@@ -243,7 +242,7 @@ def find_problem_root_folder(
         for file in path.glob(filename):
             name, ext = os.path.splitext(file.name)
             folder_name = path.parts[-1]
-            #print(f'{name} {folder_name=} {name=} {ext=}')
+            # print(f'{name} {folder_name=} {name=} {ext=}')
             if name == folder_name:
                 return True
             # read yaml file
@@ -254,7 +253,7 @@ def find_problem_root_folder(
                         return True
         return False
 
-    #print(f'{cur_dir_path=} {filename=}')
+    # print(f'{cur_dir_path=} {filename=}')
     if not filename:
         filename = '.yaml'
     cur_path = Path(cur_dir_path)
@@ -299,7 +298,7 @@ def update_args(problemid: str,
             style='bold red')
         exit(1)
     # check if problemid is given
-    #if not problemid:
+    # if not problemid:
     for f in _files:
         try:
             root_folder = find_problem_root_folder(
@@ -318,7 +317,7 @@ def update_args(problemid: str,
         except FileNotFoundError:
             console.print(f'''No problemid specified and I failed to guess
 problemid and root problem folder from filename(s) and cwd: {cur_folder}.''',
-        style='bold red')
+                          style='bold red')
         sys.exit(1)
     # check if language
     if not language:

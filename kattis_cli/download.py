@@ -49,22 +49,22 @@ def load_problem_metadata(problemid: str = '') -> Dict:
     if problemid:
         filename = f"{problemid}.yaml"
     try:
-        #print('search ', filename, Path.cwd())
+        # print('search ', filename, Path.cwd())
         root_problem_folder = utility.find_problem_root_folder(
             Path.cwd(), filename)
         if not problemid:
             problemid = root_problem_folder.name
     except FileNotFoundError:
-        #print('file not found...')
+        # print('file not found...')
         if not problemid:
             return metadata
         else:
             root_problem_folder = Path.cwd().joinpath(problemid)
             if not root_problem_folder.exists():
                 root_problem_folder.mkdir()
-    #print('root_problem_folder', root_problem_folder)
+    # print('root_problem_folder', root_problem_folder)
     metadata_file = root_problem_folder.joinpath(f"{problemid}.yaml")
-    #print('metadata_file', metadata_file)
+    # print('metadata_file', metadata_file)
     if metadata_file.exists():
         with open(metadata_file, "r", encoding='utf-8') as f:
             metadata = yaml.safe_load(f)

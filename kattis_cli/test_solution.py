@@ -5,7 +5,6 @@ from typing import Generator, List
 from contextlib import contextmanager
 import glob
 import time
-import sys
 import os
 from pathlib import Path
 from rich.console import Console
@@ -15,7 +14,6 @@ from rich.live import Live
 from rich.align import Align
 from rich import box
 
-from .utils import utility
 from . import config
 from .utils import run_python
 from . import kattis
@@ -43,7 +41,7 @@ def test_samples(
         mainclass: str,
         problem_root_folder: str,
         files: List[str],
-        ) -> None:
+) -> None:
     """Tests a problem by running all the .in files in
     the problem folder and comparing the output to the .ans files.
 
@@ -75,11 +73,13 @@ def test_samples(
     sep = os.path.sep
     in_files = glob.glob(f"{problem_root_folder}{sep}data{sep}*.in")
     if not in_files:
-        console.print(f"Sample data folder: {problem_root_folder}{sep}data", style="bold blue")
+        console.print(
+            f"Sample data folder: {problem_root_folder}{sep}data",
+            style="bold blue")
         console.print("No sample input files found!", style="bold red")
         exit(1)
     in_files.sort()
-    #console.print(in_files)
+    # console.print(in_files)
     count = 0
     total = len(in_files)
     console.clear()
@@ -148,28 +148,32 @@ def test_samples(
             # UI Table Row ---
             in_filename = Path(in_file).parts[-1]
             out_filename = Path(out_file).parts[-1]
-            #with beat(10):
+            # with beat(10):
             time.sleep(0.1)
             table.add_row(in_filename,
-                            input_content.decode('utf-8'),
-                            out_filename,
-                            expected.decode('utf-8'),
-                            output,
-                            result)
+                          input_content.decode('utf-8'),
+                          out_filename,
+                          expected.decode('utf-8'),
+                          output,
+                          result)
             if not compiler_error_checked:
                 compiler_error_checked = True
                 if output.startswith('** Syntax Error **'):
                     table.columns[4].style = 'bold red'
                     break
-    
-    console.print(f"Sample data folder: {problem_root_folder}{sep}data", style="bold blue")
+
+    console.print(
+        f"Sample data folder: {problem_root_folder}{sep}data",
+        style="bold blue")
     console.print(f'Total {total} input/output sample(s) found.')
     console.print(f"{count}/{total} tests passed.")
     if count < total:
         console.print("Check the output columns for details.")
         console.print("Keep trying!")
     else:
-        console.print("Awesome... Time to submit it to :cat: Kattis! :cat:", style="bold green")
+        console.print(
+            "Awesome... Time to submit it to :cat: Kattis! :cat:",
+            style="bold green")
         console.print("Submit to Kattis? y/n: ", style="bold blue", end="")
         ans = input()
         if ans.lower() == 'y':

@@ -1,7 +1,6 @@
 """ Main module for the kattis_cli package."""
 __version__ = '0.1.0'
 
-import os
 from typing import Tuple
 from rich.console import Console
 import click
@@ -32,7 +31,9 @@ def get(problemid: str) -> None:
         download.download_sample_data(problemid)
     except requests.exceptions.InvalidURL:
         console.print(
-            f"Sample data for Problem ID: [bold blue]{problemid}[/bold blue] not found.")
+            f"""Sample data for Problem ID: [bold blue]
+{problemid}[/bold blue] not found.")
+            """)
     console.print(
         f"Downloading metadata: [bold blue]{problemid}[/bold blue]")
     download.load_problem_metadata(problemid)
@@ -51,13 +52,21 @@ def info(problemid: str) -> None:
 @click.option('-l', '--language', default='Python 3', help='Language')
 @click.option('-m', '--mainclass', default='', help='Main file')
 @click.argument('files', nargs=-1, required=False)
-def test(problemid: str, language: str, mainclass: str, files: Tuple[str]) -> None:
+def test(
+        problemid: str,
+        language: str,
+        mainclass: str,
+        files: Tuple[str]) -> None:
     """Test solution with sample files.
     """
     problemid, language, mainclass, _files, root_folder = utility.update_args(
         problemid, language, mainclass, list(files))
-    test_solution.test_samples(problemid, language, mainclass, root_folder, _files)
-
+    test_solution.test_samples(
+        problemid,
+        language,
+        mainclass,
+        root_folder,
+        _files)
 
 
 @main.command(help='Submit a solution to Kattis.')
@@ -74,8 +83,8 @@ def test(problemid: str, language: str, mainclass: str, files: Tuple[str]) -> No
               default=False)
 @click.argument('files', nargs=-1, required=False)
 def submit(problemid: str, language: str,
-            mainclass: str, tag: str, force: bool,
-            files: Tuple[str]) -> None:
+           mainclass: str, tag: str, force: bool,
+           files: Tuple[str]) -> None:
     """Submit a solution to Kattis.
     """
     problemid, language, mainclass, _files, _ = utility.update_args(
