@@ -136,7 +136,7 @@ def test_samples(
                     f"Language {language} not supported.")
 
             expected = expected.strip()
-            #console.print(f"{ans=} {error=}")
+            # console.print(f"{ans=} {error=}")
             if expected == ans.encode('utf-8').strip():
                 result = "[bold green]✅[/bold green]"
                 count += 1

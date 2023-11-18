@@ -86,4 +86,3 @@ def test_syntax_error():
 
     assert 'SyntaxError: ' in error
     assert ans == ''
-

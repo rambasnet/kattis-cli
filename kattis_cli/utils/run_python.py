@@ -2,7 +2,6 @@
 """
 
 from typing import Tuple
-from io import BytesIO as io
 import subprocess
 import selectors
 import textwrap
