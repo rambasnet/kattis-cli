@@ -1,11 +1,50 @@
 """Runs a python file and returns the output."
 """
 
+from typing import Tuple
+from io import BytesIO as io
 import subprocess
+import selectors
 import textwrap
 
 
-def run(file: str, input_content: bytes) -> str:
+def run(mainfile: str, input_file: str) -> Tuple[str, str]:
+    """_summary_
+
+    Args:
+        mainfile (str): _description_
+        input_content (bytes): _description_
+
+    Returns:
+        Tuple[str, str]: _description_
+    """
+    filein = open(input_file, 'r', encoding='utf-8')
+    p = subprocess.Popen(
+        ["python", mainfile], stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE, stdin=filein
+    )
+    sel = selectors.DefaultSelector()
+    sel.register(p.stdout, selectors.EVENT_READ)  # type: ignore
+    sel.register(p.stderr, selectors.EVENT_READ)  # type: ignore
+    ans = ''
+    error = ''
+    done = False
+    while not done:
+        for key, _ in sel.select():
+            data = key.fileobj.read1().decode()  # type: ignore
+            if not data:
+                done = True
+                break
+            if key.fileobj is p.stdout:
+                # print(data, end="")
+                ans = data
+            else:
+                # print(data, end="", file=sys.stderr)
+                error = data
+    return ans, error
+
+
+def run_old(file: str, input_content: bytes) -> str:
     """Runs a python file and returns the output."""
     # print(f'{file=}')
     try:

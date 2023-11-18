@@ -130,14 +130,14 @@ def test_samples(
                 expected.replace(b'\r\n', b'\n')
             # Run the program
             if language.strip().lower() in ['python', 'python 3', 'python3']:
-                output = run_python.run(str(mainfile), input_content)
+                ans, error = run_python.run(str(mainfile), in_file)
             else:
                 raise NotImplementedError(
                     f"Language {language} not supported.")
 
             expected = expected.strip()
-
-            if expected == output.encode('utf-8').strip():
+            #console.print(f"{ans=} {error=}")
+            if expected == ans.encode('utf-8').strip():
                 result = "[bold green]✅[/bold green]"
                 count += 1
             else:
@@ -152,11 +152,11 @@ def test_samples(
                           input_content.decode('utf-8'),
                           out_filename,
                           expected.decode('utf-8'),
-                          output,
+                          ans,
                           result)
             if not compiler_error_checked:
                 compiler_error_checked = True
-                if output.startswith('** Syntax Error **'):
+                if 'SyntaxError: ' in error:
                     table.columns[4].style = 'bold red'
                     break
 
