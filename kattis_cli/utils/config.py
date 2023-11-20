@@ -1,12 +1,15 @@
 """ Config file parser for kattis-cli
 """
 
-from typing import Any
+from typing import Any, Dict
 from pathlib import Path
 import sys
 import os
 import configparser
 from tomlkit import load
+import yaml
+
+from .utility import find_problem_root_folder
 
 _DEFAULT_CONFIG = Path.home().joinpath('.kattisrc')
 
@@ -60,3 +63,13 @@ loginurl: https://<kattis>/login
 submissionurl: https://<kattis>/submit
 submissionsurl: https://<kattis>/submissions''')
     return cfg
+
+
+def update_problem_metadata(problemid: str, metadata: Dict[Any, Any]) -> None:
+    """Update problem.yaml file.
+    """
+    root_problem_folder = find_problem_root_folder(Path.cwd(),
+                                                   f'{problemid}.yaml')
+    yaml_file = Path.joinpath(root_problem_folder, f'{problemid}.yaml')
+    with open(yaml_file, 'w', encoding='utf-8') as f:
+        yaml.dump(metadata, f, default_flow_style=False)

@@ -22,7 +22,7 @@ from rich.prompt import Confirm
 
 from kattis_cli.utils import utility
 from kattis_cli.utils import config
-from . import ui
+from kattis_cli import ui
 
 _HEADERS = {'User-Agent': 'kattis-cli-submit'}
 
@@ -275,10 +275,12 @@ def parse_row_html(html: str) -> Any:
     return runtime, status, language, test_status, test_result
 
 
-def show_kattis_judgement(submission_url: str,
+def show_kattis_judgement(problemid: str, submission_url: str,
                           cfg: configparser.ConfigParser) -> None:
     """Show judgement from Kattis.
     """
+    config_data = ui.show_problem_metadata(problemid)
+    config_data['submissions'] += 1
     console = Console()
     login_reply = login_from_config(cfg)
     title = '\n[bold blue]                           '
@@ -326,12 +328,15 @@ WAITING...[/] 🤞🏻🤞🏻🤞🏻🤞🏻🤞🏻‍'
                 kattis_live.stop()
                 break
     if status_id == _ACCEPTED_STATUS:
-        verdict = '👍🎆👍🎆👍🎆🎈🎈 [bold yellow]YAY!! \
-KEEP GOING...[/] 🎈🎈👍🎆👍🎆👍🎆'
+        verdict = '👍🎆🔥🎈🎈 [bold yellow]YAY!! \
+KEEP GOING...[/] 🎈🎈👍🎆🔥'
         console.print()
+        config_data['accepted'] += 1
     else:
         verdict = '💪🧐💪 [bold green]SORRY![/] 🧐💪🧐'
     console.print(Align.center(verdict))
+    config.update_problem_metadata(problemid, config_data)
+    config_data = ui.show_problem_metadata(problemid)
 
 
 def get_login_reply(cfg: configparser.ConfigParser) -> requests.Response:
@@ -423,5 +428,4 @@ def submit_solution(files: List[str], problemid: str,
         pass
 
     if submission_url:
-        ui.show_problem_meta_data(problemid)
-        show_kattis_judgement(submission_url, cfg)
+        show_kattis_judgement(problemid, submission_url, cfg)

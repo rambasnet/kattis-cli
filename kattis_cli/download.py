@@ -10,7 +10,7 @@ import requests
 import yaml
 from bs4 import BeautifulSoup
 
-from .utils import utility
+from .utils import config, utility
 from . import settings
 
 
@@ -68,6 +68,10 @@ def load_problem_metadata(problemid: str = '') -> Dict[Any, Any]:
     if metadata_file.exists():
         with open(metadata_file, "r", encoding='utf-8') as f:
             metadata = yaml.safe_load(f)
+            if 'submissions' not in metadata:
+                metadata['submissions'] = 0
+                metadata['accepted'] = 0
+                config.update_problem_metadata(problemid, metadata)
     else:
         metadata = _download_metadata(root_problem_folder, problemid)
     return metadata
@@ -105,7 +109,8 @@ def _download_metadata(root_problem_folder: Path,
 
     meta_data = {'problemid': problemid, 'title': '',
                  'cpu_limit': 'None', 'mem_limit': 'None',
-                 'difficulty': 'None', 'source': 'None'}
+                 'difficulty': 'None', 'source': 'None',
+                 'submissions': 0, 'accepted': 0}
 
     # get the title of the problem
     title = soup.find("h1")
@@ -117,7 +122,8 @@ def _download_metadata(root_problem_folder: Path,
     name_mapping = {'cpu_limit': 'cpu_limit',
                     'mem_limit': 'mem_limit',
                     'difficulty': 'difficulty',
-                    'source': 'source'}
+                    'source': 'source',
+                    }
     for item in data:
         try:
             data_name = item.attrs['data-name'].split('-')[1]

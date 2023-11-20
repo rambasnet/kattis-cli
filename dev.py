@@ -45,7 +45,7 @@ def get(problemid: str) -> None:
 def info(problemid: str) -> None:
     """Display problem metada.
     """
-    ui.show_problem_meta_data(problemid)
+    ui.show_problem_metadata(problemid)
 
 
 @main.command(help='Test solution with sample files.')
