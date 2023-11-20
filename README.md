@@ -19,8 +19,6 @@ python --version
 chcp 65001
 ```
 
-```bash
-
 ## Installation
 
 ```bash
