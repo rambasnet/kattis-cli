@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 import shutil
 
-from kattis_cli import config
+from kattis_cli.utils import config
 
 
 class TestConfig(unittest.TestCase):

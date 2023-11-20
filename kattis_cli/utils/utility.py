@@ -8,9 +8,10 @@ import re
 from pathlib import Path
 import yaml
 from rich.console import Console
+from kattis_cli.utils import config
 
 
-LANGUAGE_GUESS = {
+KATTIS_LANGUAGE_GUESS = {
     '.c': 'C',
     '.c++': 'C++',
     '.cc': 'C++',
@@ -36,7 +37,6 @@ LANGUAGE_GUESS = {
     '.php': 'PHP',
     '.pl': 'Prolog',
     '.py': 'Python 3',
-    '.pyc': 'Python 3',
     '.rb': 'Ruby',
     '.rs': 'Rust',
     '.scala': 'Scala',
@@ -70,7 +70,13 @@ GUESS_MAINFILE = {
     'Ruby',
     'Rust',
     'TypeScript',
-    'Zig'}
+    'Zig'
+}
+
+LOCAL_LANGUAGES = {
+    'Python 3': 'python3',
+    'C++': 'c++'
+}
 
 
 def guess_language(ext: str, files: List[str]) -> str:
@@ -96,7 +102,7 @@ def guess_language(ext: str, files: List[str]) -> str:
             return "Python 2"
         else:
             return "Python 3"
-    return LANGUAGE_GUESS.get(ext, '')
+    return KATTIS_LANGUAGE_GUESS.get(ext, '')
 
 
 def is_python2(files: List[str]) -> bool:
@@ -129,7 +135,7 @@ def is_python2(files: List[str]) -> bool:
 def guess_mainfile(
         language: str,
         files: List[str],
-        problemid: str = '') -> str:
+        problemid: str) -> Any:
     """Guess the main file.
 
     Args:
@@ -141,6 +147,10 @@ def guess_mainfile(
     """
     if len(files) == 1:
         return files[0]
+    # check .kattis-cli.toml file
+    config_data = config.parse_config(language)
+    if 'mainfile' in config_data:
+        return config_data['mainfile'].replace(('<problemid>'), problemid)
     for filename in files:
         if os.path.splitext(os.path.basename(filename))[0] in ['main', 'Main']:
             return filename
@@ -160,10 +170,11 @@ def guess_mainfile(
                     return filename
         except IOError:
             pass
+    # main file is the one with problemid
     return files[0]
 
 
-def guess_mainclass(language: str, files: List[str]) -> str:
+def guess_mainclass(problemid: str, language: str, files: List[str]) -> Any:
     """Guess the main class.
 
     Args:
@@ -174,9 +185,9 @@ def guess_mainclass(language: str, files: List[str]) -> str:
         str: main class
     """
     if language in GUESS_MAINFILE and len(files) > 1:
-        return os.path.basename(guess_mainfile(language, files))
+        return os.path.basename(guess_mainfile(language, files, problemid))
     if language in GUESS_MAINCLASS:
-        mainfile = os.path.basename(guess_mainfile(language, files))
+        mainfile = os.path.basename(guess_mainfile(language, files, problemid))
         name = os.path.splitext(mainfile)[0]
         if language == 'Kotlin':
             return name[0].upper() + name[1:] + 'Kt'
@@ -193,12 +204,12 @@ def valididate_language(language: str) -> bool:
     Returns:
         bool: True if valid language, exit otherwise.
     """
-    if language in LANGUAGE_GUESS.values():
+    if language in KATTIS_LANGUAGE_GUESS.values():
         return True
     console = Console()
     console.print(f'Invalid language: "{language}"', style='bold red')
     console.print('Valid languages are:', style='bold green')
-    for lang in sorted(list(set(LANGUAGE_GUESS.values()))):
+    for lang in sorted(list(set(KATTIS_LANGUAGE_GUESS.values()))):
         console.print(f'\t\t - {lang}')
     exit(1)
 
@@ -216,7 +227,7 @@ def valid_extension(file: str) -> bool:
         ext = os.path.splitext(file)
         if len(ext) != 2:
             return False
-        return ext[1] in LANGUAGE_GUESS
+        return ext[1] in KATTIS_LANGUAGE_GUESS
     return False
 
 
@@ -290,33 +301,24 @@ def update_args(problemid: str,
     Returns:
         Tuple[str]: Update problemid, language, mainclass, and files
     """
-
     console = Console()
-    cur_folder = str(Path.cwd())
-    root_folder = Path.cwd()
-    console = Console()
-    # check if files are given
-    _files = files if files else []
-    if not _files:
-        _files = [
-            f for f in os.listdir(cur_folder) if valid_extension(f)]
-    if not _files:
-        console.print(
-            'No source file(s) found in the current folder!',
-            style='bold red')
-        exit(1)
+    if not files:
+        files = get_coding_files()
     # check if problemid is given
     # if not problemid:
-    for f in _files:
-        try:
-            root_folder = find_problem_root_folder(
-                cur_folder, f.lower())
-            if not problemid:
+    cur_folder = Path.cwd()
+    root_folder = Path.cwd()
+    if not problemid:
+        for f in files:
+            try:
+                root_folder = find_problem_root_folder(
+                    cur_folder, f.lower())
+                # if not problemid:
                 problemid = root_folder.name
-            break
-        except FileNotFoundError:
-            # print(ex)
-            pass
+                break
+            except FileNotFoundError:
+                # print(ex)
+                pass
     if not problemid:
         try:
             root_folder = find_problem_root_folder(
@@ -329,9 +331,9 @@ problemid and root problem folder from filename(s) and cwd: {cur_folder}.''',
             sys.exit(1)
     # check if language
     if not language:
-        _, ext = os.path.splitext(os.path.basename(_files[0]))
+        _, ext = os.path.splitext(os.path.basename(files[0]))
         # Guess language from files
-        language = guess_language(ext, _files)
+        language = guess_language(ext, files)
         if not language:
             console.print(f'''\
 No language specified, and I failed to guess language from
@@ -340,6 +342,24 @@ filename extension "{ext}"''')
     # check if valid language
     valididate_language(language)
     if not mainclass:
-        mainclass = guess_mainclass(language, _files)
+        mainclass = guess_mainclass(problemid, language, files)
+    # print(f'Returning...{problemid=} {language=} {mainclass=} {files=}')
+    return problemid, language, mainclass, files, root_folder
 
-    return problemid, language, mainclass, _files, root_folder
+
+def get_coding_files() -> List[str]:
+    """Get coding files from current directory.
+
+    Returns:
+        List[str]: List of coding files.
+    """
+    cur_folder = str(Path.cwd())
+    console = Console()
+    files = [
+        f for f in os.listdir(cur_folder) if valid_extension(f)]
+    if not files:
+        console.print(
+            'No source file(s) found in the current folder!',
+            style='bold red')
+        exit(1)
+    return files

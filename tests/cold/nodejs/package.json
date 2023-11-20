@@ -1,0 +1,17 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "main": "cold.js",
+  "dependencies": {
+    "jest": "^26.6.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "jest",
+    "kattis_test": "cat ../1.in | node cold.js | diff - ../1.ans && cat ../2.in | node cold.js | diff - ../2.ans && echo \"All Kattis sample test cases passed!\""
+  },
+  "keywords": [],
+  "author": "Ram Basnet",
+  "license": "MIT",
+  "description": "Kattis cold problem"
+}

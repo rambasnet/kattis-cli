@@ -6,7 +6,7 @@ import requests
 from rich.console import Console
 from rich.prompt import Prompt, Confirm
 from . import kattis
-from . import config
+from .utils import config
 
 
 _LOGIN_URL = 'https://open.kattis.com/login'

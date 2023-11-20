@@ -18,10 +18,11 @@ import requests.cookies
 from rich.console import Console
 from rich.align import Align
 from rich.live import Live
+from rich.prompt import Confirm
 
 from kattis_cli.utils import utility
+from kattis_cli.utils import config
 from . import ui
-from . import config
 
 _HEADERS = {'User-Agent': 'kattis-cli-submit'}
 
@@ -144,6 +145,8 @@ def submit(
 
     Returns the requests.Result from the submission
     """
+    mainfile = utility.guess_mainfile(language, files, problem)
+    mainclass = mainfile
 
     data = {'submit': 'true',
             'submit_ctr': 2,
@@ -185,9 +188,8 @@ def confirm_or_die(problem: str, language: str,
             console.print('Mainclass:', mainclass)
     if tag:
         console.print('Tag:', tag)
-    console.print('Submit (y/N)?')
-    if sys.stdin.readline().upper()[:-1] != 'Y':
-        console.print('Cancelling')
+    if not Confirm.ask('Submit to Kattis', default=True):
+        console.print('Cancelling...')
         sys.exit(1)
 
 
@@ -215,10 +217,6 @@ def get_submission_status(
         cookies=cookies,
         headers=_HEADERS, timeout=10)
     return reply.json()
-
-
-_RED_COLOR = 31
-_GREEN_COLOR = 32
 
 
 def parse_row_html(html: str) -> Any:

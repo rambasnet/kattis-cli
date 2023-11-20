@@ -62,7 +62,7 @@ kattis info
 
 ### Test a solution locally
 
-- currently only supports Python 3
+- currently supported languages: Python 3, C++
 - make sure python is in your PATH
 - make sure python files have first line shebang: !/usr/bin/env python3
     - or have extensions .py3

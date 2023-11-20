@@ -1,5 +1,5 @@
 """ Main module for the kattis_cli package."""
-__version__ = '0.1.0'
+__version__ = '0.1.6'
 
 from typing import Tuple
 from rich.console import Console
@@ -50,8 +50,8 @@ def info(problemid: str) -> None:
 
 @main.command(help='Test solution with sample files.')
 @click.option('-p', '--problemid', default='', help='Problem ID')
-@click.option('-l', '--language', default='Python 3', help='Language')
-@click.option('-m', '--mainclass', default='', help='Main file')
+@click.option('-l', '--language', default='', help='Sets language')
+@click.option('-m', '--mainclass', default='', help='Sets mainclass/mainfile')
 @click.argument('files', nargs=-1, required=False)
 def test(
         problemid: str,
@@ -62,6 +62,7 @@ def test(
     """
     problemid, language, mainclass, _files, root_folder = utility.update_args(
         problemid, language, mainclass, list(files))
+    # print('After - ', f'{problemid=} {language=} {mainclass=} {_files=}')
     test_solution.test_samples(
         problemid,
         language,
@@ -74,7 +75,7 @@ def test(
 @click.option('-p', '--problemid', default='',
               help='Which problem to submit to.')
 @click.option('-l', '--language', default='', help='Sets language')
-@click.option('-m', '--mainclass', default='', help='Sets mainclass.')
+@click.option('-m', '--mainclass', default='', help='Sets mainclass/mainfile.')
 @click.option("-t", '--tag', help="Disable all prompts",
               flag_value=True, default=False)
 @click.option('-f',
@@ -91,6 +92,7 @@ def submit(problemid: str, language: str,
     problemid, language, mainclass, _files, _ = utility.update_args(
         problemid, language, mainclass, list(files))
     # Finally, submit the solution
+    # print(f'{problemid=} {language=} {mainclass=} {tag=} {force=} {_files=}')
     kattis.submit_solution(_files, problemid,
                            language, mainclass,
                            tag, force)

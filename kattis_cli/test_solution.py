@@ -13,9 +13,11 @@ from rich.table import Table
 from rich.live import Live
 from rich.align import Align
 from rich import box
+from rich.prompt import Confirm
 
-from .utils import run_python, utility
 from . import kattis
+from .utils import cpp, run_program
+
 
 BEAT_TIME = 0.04
 
@@ -52,7 +54,8 @@ def test_samples(
         files (List[str]): List of files
     """
     console = Console()
-    mainfile = utility.guess_mainfile(language, files, problemid)
+    # mainfile = utility.guess_mainfile(language, files, problemid)
+    mainfile = mainclass
     # print(f"Main file: {mainfile}")
     # config_data = config.parse_config(language)
 
@@ -71,19 +74,26 @@ def test_samples(
     sep = os.path.sep
     in_files = glob.glob(f"{problem_root_folder}{sep}data{sep}*.in")
     if not in_files:
-        console.print(
-            f"Sample data folder: {problem_root_folder}{sep}data",
-            style="bold blue")
+        console.print(f"Sample data folder: {problem_root_folder}{sep}data",
+                      style="bold blue")
         console.print("No sample input files found!", style="bold red")
         exit(1)
     in_files.sort()
+    # check if language needs to be compiled
+    if language.lower() in ['cpp', 'c++']:
+        code, ans, error = cpp.compile_cpp(files)
+        if code != 0:  # compilation error; exit code
+            console.print(error, style='bold red')
+            exit(1)
+        mainfile = './a.out'
+        console.print('Compiled successfully!', style='bold green')
+        console.print('Output file: a.out', style='bold green')
     # console.print(in_files)
     count = 0
     total = len(in_files)
     console.clear()
     title = f"[not italic bold blue]👷‍ Testing {mainfile} "
     title += f" using {language} 👷‍[/]"
-    compiler_error_checked = False
     table.title = title
     with Live(table_centered, console=console,
               screen=False, refresh_per_second=10):
@@ -129,13 +139,10 @@ def test_samples(
                 expected = f.read()
                 expected.replace(b'\r\n', b'\n')
             # Run the program
-            if language.strip().lower() in ['python', 'python 3', 'python3']:
-                ans, error = run_python.run(str(mainfile), in_file)
-            else:
-                raise NotImplementedError(
-                    f"Language {language} not supported.")
-
+            code, ans, error = run_program.run(language, mainfile, in_file)
             expected = expected.strip()
+            if code != 0:
+                ans = error
             # console.print(f"{ans=} {error=}")
             if expected == ans.encode('utf-8').strip():
                 result = "[bold green]✅[/bold green]"
@@ -154,11 +161,9 @@ def test_samples(
                           expected.decode('utf-8'),
                           ans,
                           result)
-            if not compiler_error_checked:
-                compiler_error_checked = True
-                if 'SyntaxError: ' in error:
-                    table.columns[4].style = 'bold red'
-                    break
+            if code != 0 and 'SyntaxError: ' in error:
+                table.columns[4].style = 'bold red'
+                break
 
     console.print(
         f"Sample data folder: {problem_root_folder}{sep}data",
@@ -172,9 +177,9 @@ def test_samples(
         console.print(
             "Awesome... Time to submit it to :cat: Kattis! :cat:",
             style="bold green")
-        console.print("Submit to Kattis? y/n: ", style="bold blue", end="")
-        ans = input()
-        if ans.lower() == 'y':
+        # console.print("Submit to Kattis? y/n: ", style="bold blue", end="")
+        # ans = input()
+        if Confirm.ask("Submit to Kattis?", default=True):
             kattis.submit_solution(files, problemid,
                                    language, mainclass,
                                    tag="", force=True)

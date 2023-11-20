@@ -1,0 +1,4 @@
+[flake8]
+extend-ignore = E203, C901, W503
+exclude = tests/cold
+max-complexity = 10

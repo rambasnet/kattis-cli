@@ -16,10 +16,10 @@ class ConfigError(Exception):
 
 
 def parse_config(language: str = '') -> Any:
-    """Parse config file.
+    """Parse toml config file.
 
     Returns:
-        Dict: config file
+        Dict: toml file.
     """
     config_file = Path.home().joinpath(".kattis-cli.toml")
     if not config_file.exists():

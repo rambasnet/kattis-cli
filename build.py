@@ -6,7 +6,7 @@ from typing import Any
 import shutil
 
 
-def build(kwargs: Any) -> Any:
+def build() -> Any:
     """_summary_
 
     Returns:
@@ -14,9 +14,8 @@ def build(kwargs: Any) -> Any:
     """
     # copy dev.py to kattis_cli/main.py
     shutil.copyfile('dev.py', 'kattis_cli/main.py')
-
-    return kwargs
+    print('Build successful.')
 
 
 if __name__ == '__main__':
-    build({})
+    build()
