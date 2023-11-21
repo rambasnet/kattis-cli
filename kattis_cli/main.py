@@ -62,7 +62,7 @@ def test(
     """
     problemid, language, mainclass, _files, root_folder = utility.update_args(
         problemid, language, mainclass, list(files))
-    # print('After - ', f'{problemid=} {language=} {mainclass=} {_files=}')
+    #print('After - ', f'{problemid=} {language=} {mainclass=} {_files=}')
     test_solution.test_samples(
         problemid,
         language,

@@ -1,6 +1,7 @@
 """Tester module for KattisKitten.
 """
 
+from ast import main
 from typing import Generator, List
 from contextlib import contextmanager
 import glob
@@ -16,7 +17,7 @@ from rich import box
 from rich.prompt import Confirm
 
 from . import kattis
-from .utils import cpp, run_program
+from .utils import cpp, run_program, utility
 
 
 BEAT_TIME = 0.04
@@ -54,7 +55,8 @@ def test_samples(
         files (List[str]): List of files
     """
     console = Console()
-    # mainfile = utility.guess_mainfile(language, files, problemid)
+    if not mainclass:
+        mainclass = utility.guess_mainfile(language, files, problemid)
     mainfile = mainclass
     # print(f"Main file: {mainfile}")
     # config_data = config.parse_config(language)
