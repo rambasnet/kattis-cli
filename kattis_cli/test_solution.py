@@ -1,7 +1,6 @@
 """Tester module for KattisKitten.
 """
 
-from ast import main
 from typing import Generator, List
 from contextlib import contextmanager
 import glob
