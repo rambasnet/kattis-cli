@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kattis_cli"
-version = "0.1.8"
+version = "0.1.9"
 authors = ["Ram Basnet <rambasnet@gmail.com>"]
 description = "A command-line tool for Kattis"
 readme = "README.md"
@@ -16,7 +16,7 @@ classifiers = [
 "Bug Tracker" = "https://github.com/rambasnet/kattis-cli/issues"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.8"
 requests = "^2.31.0"
 click = "^8.1.7"
 beautifulsoup4 = "^4.12.2"
