@@ -5,7 +5,7 @@ Based on Official Kattis CLI: [https://github.com/Kattis/kattis-cli](https://git
 
 ## Requirements
 
-- Python 3.6+
+- Python 3.8+
 - [Kattis account](https://open.kattis.com/login/email)
 
 ## Windows
