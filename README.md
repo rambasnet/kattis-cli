@@ -31,6 +31,7 @@ If you've Python version 3.8 or higher, you can skip creating virtual environmen
 
 
 ### Create and activate virtual environment using conda
+
 - follow the instruction provided in the link to create and activate virtual environment:
 [https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment)
 
@@ -119,3 +120,7 @@ kattis submit
 
 ![Progress](images/progress.png)
 ![Result](images/result.png)
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Please make sure to update tests as appropriate. Adding support for more languages is highly appreciated.
