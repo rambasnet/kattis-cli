@@ -11,7 +11,7 @@ mainfile = "{problemid}.py" # the name of the main file or file with mainclass
 
 [python3]
 compile = ""
-execute = "pypy3 {mainfile}"
+execute = "python3 {mainfile}"
 mainfile = "{problemid}.py"
 
 [cpp]
