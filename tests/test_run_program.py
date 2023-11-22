@@ -11,6 +11,10 @@ from kattis_cli.utils import cpp
 def test_run_python() -> None:
     """Test run_program.py for Python programs
     """
+    if not Path.home().joinpath('.kattis-cli.toml').exists():
+        shutil.copyfile(
+            './kattis_cli/.kattis-cli.toml',
+            Path.home().joinpath('.kattis-cli.toml'))
     root_folder = Path('tests/cold')
     main_program = str(root_folder.joinpath('python3').joinpath('cold.py'))
     for file in root_folder.joinpath('data').glob('*.in'):

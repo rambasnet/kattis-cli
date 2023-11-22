@@ -4,9 +4,8 @@
 import subprocess
 from typing import Tuple, List
 
-# from kattis_cli import config
-# from . import run_python
-# from . import run_cpp
+from . import config
+from . import utility
 
 
 def run(language: str, main_program: str,
@@ -21,15 +20,18 @@ def run(language: str, main_program: str,
     Returns:
         Tuple[str, str]: program output and error
     """
-    if language.strip().lower() == 'python 3':  # Kattis name
-        code, ans, error = execute(['python3', main_program], input_file)
-    elif language.strip().lower() == 'c++':
-        code, ans, error = execute(['./a.out'], input_file)
-    elif language.strip().lower().find('node.js') >= 0:
-        code, ans, error = execute(['node', main_program], input_file)
-    else:
+
+    test_language = utility.LOCAL_TEST_LANGUAGES.get(language, '')
+    config_data = config.parse_config(test_language)
+    program = config_data['compiler']
+    # print(f'{program=} {language} {test_language}')
+    if not program:
         raise NotImplementedError(
             f"Language {language} not supported.")
+    if language.strip().lower() == 'c++':
+        code, ans, error = execute(['./a.out'], input_file)
+    else:
+        code, ans, error = execute([program, main_program], input_file)
     return code, ans, error
 
 

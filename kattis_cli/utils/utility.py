@@ -81,9 +81,6 @@ LOCAL_TEST_LANGUAGES = {
 }
 
 
-
-
-
 def guess_language(ext: str, files: List[str]) -> str:
     """Guess the language.
 
