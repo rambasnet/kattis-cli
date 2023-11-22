@@ -25,6 +25,8 @@ def run(language: str, main_program: str,
         code, ans, error = execute(['python3', main_program], input_file)
     elif language.strip().lower() == 'c++':
         code, ans, error = execute(['./a.out'], input_file)
+    elif language.strip().lower().find('node.js') >= 0:
+        code, ans, error = execute(['node', main_program], input_file)
     else:
         raise NotImplementedError(
             f"Language {language} not supported.")

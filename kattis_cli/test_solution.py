@@ -81,7 +81,7 @@ def test_samples(
         exit(1)
     in_files.sort()
     # check if language needs to be compiled
-    if language.lower() in ['cpp', 'c++']:
+    if language.lower() == 'c++':
         code, ans, error = cpp.compile_cpp(files)
         if code != 0:  # compilation error; exit code
             console.print(error, style='bold red')

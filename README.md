@@ -45,8 +45,9 @@ pip install kattis-cli
 python -m pip install kattis-cli
 ```
 
-## Update Kattis-cli
+## Update Kattis-CLI
 
+- remove or rename **.kattis-cli.toml** file in your home directory
 - activate virtual environment if you've created one for kattis-cli
 
 ```bash
@@ -97,7 +98,7 @@ kattis info
 
 ### Test a solution locally
 
-- currently supported languages: Python 3, C++
+- currently supported languages: Python 3, C++, NodeJS
 - make sure python is in your PATH
 - make sure python files have first line shebang: !/usr/bin/env python3
     - or have extensions .py3

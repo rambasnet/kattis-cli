@@ -26,3 +26,11 @@ file_extensions = ["cpp", "cc"]
 mainfile = "<problemid>.cpp"
 mainclass = ""
 kattis_name = "C++"
+
+[nodejs] #don't change this name
+compiler = "node"
+compiler_flags = ""
+file_extensions = ["js"]
+mainfile = "<problemid>.js"
+mainclass = ""
+kattis_name = "JavaScript (Node.js)"

@@ -73,10 +73,15 @@ GUESS_MAINFILE = {
     'Zig'
 }
 
-LOCAL_LANGUAGES = {
+# mapping is used for .kattis-cli.toml file configuration
+LOCAL_TEST_LANGUAGES = {
     'Python 3': 'python3',
-    'C++': 'c++'
+    'C++': 'cpp',
+    'JavaScript (Node.js)': 'nodejs'
 }
+
+
+
 
 
 def guess_language(ext: str, files: List[str]) -> str:
@@ -148,7 +153,8 @@ def guess_mainfile(
     if len(files) == 1:
         return files[0]
     # check .kattis-cli.toml file
-    config_data = config.parse_config(language)
+    test_language = LOCAL_TEST_LANGUAGES.get(language, '')
+    config_data = config.parse_config(test_language)
     if 'mainfile' in config_data:
         return config_data['mainfile'].replace(('<problemid>'), problemid)
     for filename in files:

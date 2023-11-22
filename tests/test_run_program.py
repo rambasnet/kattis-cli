@@ -11,9 +11,9 @@ from kattis_cli.utils import cpp
 def test_run_python() -> None:
     """Test run_program.py for Python programs
     """
-    python_folder = Path('tests/cold')
-    main_program = str(python_folder.joinpath('python3').joinpath('cold.py'))
-    for file in python_folder.joinpath('data').glob('*.in'):
+    root_folder = Path('tests/cold')
+    main_program = str(root_folder.joinpath('python3').joinpath('cold.py'))
+    for file in root_folder.joinpath('data').glob('*.in'):
         input_file = str(file)
         code, ans, _ = run_program.run('Python 3', main_program, input_file)
         output = file.with_suffix('.ans').read_text(encoding='utf-8')
