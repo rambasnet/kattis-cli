@@ -1,0 +1,14 @@
+pytest
+mypy
+flake8
+requests
+rich
+pyyaml
+types-PyYAML
+types-requests
+beautifulsoup4
+types-beautifulsoup4
+tomlkit
+lxml
+poetry
+autopep8

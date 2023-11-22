@@ -1,8 +1,7 @@
 """Tester module for KattisKitten.
 """
 
-from typing import Generator, List
-from contextlib import contextmanager
+from typing import Any, List, Dict
 import glob
 import time
 import os
@@ -15,48 +14,30 @@ from rich.align import Align
 from rich import box
 from rich.prompt import Confirm
 
-from . import kattis
-from .utils import cpp, run_program, utility
-
-
-BEAT_TIME = 0.04
-
-
-@contextmanager
-def beat(length: int = 1) -> Generator[None, None, None]:
-    """Beat the heart.
-
-    Args:
-        length (int, optional): _description_. Defaults to 1.
-
-    Yields:
-        Generator[None, None, None]: yields None
-    """
-    yield
-    time.sleep(length * BEAT_TIME)
+from kattis_cli import kattis
+from kattis_cli.utils import run_program, utility
 
 
 def test_samples(
         problemid: str,
-        language: str,
+        loc_language: str,
         mainclass: str,
         problem_root_folder: str,
         files: List[str],
+        lang_config: Dict[Any, Any]
 ) -> None:
     """Tests a problem by running all the .in files in
     the problem folder and comparing the output to the .ans files.
 
     Args:
         problem (str): problemid
-        language (str): programming language
+        loc_language (str): programming language
         mainclass (str): main class
         problem_root_folder (str): root folder where this problem is located
         files (List[str]): List of files
+        lang_config (Dict[Any, Any]): language config
     """
     console = Console()
-    if not mainclass:
-        mainclass = utility.guess_mainfile(language, files, problemid)
-    mainfile = mainclass
     # print(f"Main file: {mainfile}")
     # config_data = config.parse_config(language)
 
@@ -81,20 +62,20 @@ def test_samples(
         exit(1)
     in_files.sort()
     # check if language needs to be compiled
-    if language.lower() == 'c++':
-        code, ans, error = cpp.compile_cpp(files)
-        if code != 0:  # compilation error; exit code
+    if lang_config['compile']:
+        ex_code, ans, error = run_program.compile_program(lang_config, files)
+        if ex_code != 0:  # compilation error; exit code
             console.print(error, style='bold red')
             exit(1)
-        mainfile = './a.out'
+        # mainfile = './a.out'
         console.print('Compiled successfully!', style='bold green')
         console.print('Output file: a.out', style='bold green')
     # console.print(in_files)
     count = 0
     total = len(in_files)
     console.clear()
-    title = f"[not italic bold blue]👷‍ Testing {mainfile} "
-    title += f" using {language} 👷‍[/]"
+    title = f"[not italic bold blue]👷‍ Testing {mainclass} "
+    title += f" using {loc_language} 👷‍[/]"
     table.title = title
     with Live(table_centered, console=console,
               screen=False, refresh_per_second=10):
@@ -140,7 +121,7 @@ def test_samples(
                 expected = f.read()
                 expected.replace(b'\r\n', b'\n')
             # Run the program
-            code, ans, error = run_program.run(language, mainfile, in_file)
+            code, ans, error = run_program.run(lang_config, mainclass, in_file)
             expected = expected.strip()
             if code != 0:
                 ans = error
@@ -172,15 +153,14 @@ def test_samples(
     console.print(f'Total {total} input/output sample(s) found.')
     console.print(f"{count}/{total} tests passed.")
     if count < total:
-        console.print("Check the output columns for details.")
+        console.print("Check the output columns for differences.")
         console.print("Keep trying!")
     else:
         console.print(
             "Awesome... Time to submit it to :cat: Kattis! :cat:",
             style="bold green")
-        # console.print("Submit to Kattis? y/n: ", style="bold blue", end="")
-        # ans = input()
         if Confirm.ask("Submit to Kattis?", default=True):
+            kat_language = utility.LOCAL_TO_KATTIS.get(loc_language, '')
             kattis.submit_solution(files, problemid,
-                                   language, mainclass,
+                                   kat_language, mainclass,
                                    tag="", force=True)

@@ -58,7 +58,7 @@ function solve1() {
     }
 }
 
-if (require.main == module) {
+if (require.main == module)
     //solve();
-    solve2();
+    solve1();
 }

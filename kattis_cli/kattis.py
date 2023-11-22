@@ -136,8 +136,8 @@ def submit(
         problem: str,
         language: str,
         files: List[str],
-        mainclass: str = '',
-        tag: str = '') -> requests.Response:
+        mainclass: str,
+        tag: str) -> requests.Response:
     """Make a submission.
 
     The url_opener argument is an OpenerDirector object to use (as
@@ -145,8 +145,8 @@ def submit(
 
     Returns the requests.Result from the submission
     """
-    mainfile = utility.guess_mainfile(language, files, problem)
-    mainclass = mainfile
+    # mainfile = utility.guess_mainfile(language, files, problem)
+    # mainclass = mainfile
 
     data = {'submit': 'true',
             'submit_ctr': 2,

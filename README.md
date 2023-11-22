@@ -5,7 +5,7 @@ Based on Official Kattis CLI: [https://github.com/Kattis/kattis-cli](https://git
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.8+ (PyPy preferred as Kattis uses PyPy to run your code)
 - [Kattis account](https://open.kattis.com/login/email)
 
 ## Windows
@@ -98,10 +98,12 @@ kattis info
 
 ### Test a solution locally
 
-- currently supported languages: Python 3, C++, NodeJS
-- make sure python is in your PATH
-- make sure python files have first line shebang: !/usr/bin/env python3
+- currently the following languages have been tested: Python 3, C++, NodeJS, C
+- make sure CLI compilers are in your PATH
+- make sure python3 files have first line shebang: !/usr/bin/env python3
     - or have extensions .py3
+- update the **.kattis-cli.toml** file in your home directory to add more languages
+- see [kattis_cli/.kattis-cli.toml](https://github.com/rambasnet/kattis-cli/blob/main/kattis_cli/.kattis-cli.toml) file for example.
 
 ```bash
 cd <problem_id>
@@ -111,6 +113,12 @@ kattis test
 ![Test](images/test.png)
 
 ### Submit a problem
+
+- make sure you've configured kattis-cli
+
+```bash
+kattis setup
+```
 
 - see live results right on the terminal
 
@@ -125,3 +133,29 @@ kattis submit
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Please make sure to update tests as appropriate. Adding support for more languages is highly appreciated.
+
+
+## Using this Repo
+
+- clone this repo
+- create virtual environment with pypy 3.8 or higher
+- using conda the following command creates kattis virtual environment with pypy3.8
+
+```bash
+conda create -c conda-forge -n kattis pypy python=3.8
+conda activate kattis
+```
+
+- install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+- run the following command to install kattis-cli from this repo on Mac/Linux
+
+```bash
+make
+./build.sh
+pip install dist/kattis_cli-x.x.x-py3-none-any.whl --force-reinstall  
+```

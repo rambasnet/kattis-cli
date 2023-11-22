@@ -94,6 +94,6 @@ and save it to your home directory with the name .kattisrc
 Login failed. Please try again.""")
     else:
         console.print("Please register your account at: ")
-        console.print("""[link=https://open.kattis.com/register]
+        console.print("""[link="https://open.kattis.com/register"]
 https://open.kattis.com/register[/link]""")
         console.print("and try again.")

@@ -5,32 +5,26 @@
 title = "Kattis-cli language configuration file for local testing."
 
 [default]
-compiler = "python3"
-compiler_flags = ""
-file_extensions = ["py", "py3"]
-mainfile = "<problemid>.py"
-mainclass = ""
+compile = "" # no compile command for this language
+execute = "python3 {mainfile}" # the command to run the program
+mainfile = "{problemid}.py" # the name of the main file or file with mainclass
 
 [python3]
-compiler = "python3"
-compiler_flags = ""
-file_extensions = ["py", "py3"]
-mainfile = "<problemid>.py"
-mainclass = ""
-kattis_name = "Python 3"
+compile = ""
+execute = "pypy3 {mainfile}"
+mainfile = "{problemid}.py"
 
-[cpp] # don't change this name
-compiler = "g++"
-compiler_flags = "-std=c++11 -O2 -Wall"
-file_extensions = ["cpp", "cc"]
-mainfile = "<problemid>.cpp"
-mainclass = ""
-kattis_name = "C++"
+[cpp]
+compile = "g++ -g -O2 -std=c++17 -Wall"
+execute = "./a.out"
+mainfile = "{problemid}.cpp"
 
-[nodejs] #don't change this name
-compiler = "node"
-compiler_flags = ""
-file_extensions = ["js"]
-mainfile = "<problemid>.js"
-mainclass = ""
-kattis_name = "JavaScript (Node.js)"
+[c]
+compile = "gcc -g -O2 -std=gnu11 -Wall"
+execute = "./a.out"
+mainfile = "{problemid}.c"
+
+[nodejs]
+compile = "node -c"
+execute = "node {mainfile}"
+mainfile = "{problemid}.js"

@@ -42,5 +42,6 @@ class TestConfig(unittest.TestCase):
         shutil.copy(src_file, dest_file)
         data = config.parse_config()
         dest_file.unlink()
-        self.assertTrue('py' in data['file_extensions'])
-        self.assertEqual(data['compiler'], 'python3')
+        self.assertEqual(data['compile'], '')
+        self.assertEqual(data['execute'], 'python3 {mainfile}')
+        self.assertEqual(data['mainfile'], '{problemid}.py')

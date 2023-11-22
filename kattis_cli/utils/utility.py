@@ -1,7 +1,7 @@
 """Module for language utilities.
 """
 
-from typing import List, Union, Any
+from typing import List, Union, Any, Dict
 import sys
 import os
 import re
@@ -11,50 +11,51 @@ from rich.console import Console
 from kattis_cli.utils import config
 
 
-KATTIS_LANGUAGE_GUESS = {
-    '.c': 'C',
-    '.c++': 'C++',
-    '.cc': 'C++',
-    '.c#': 'C#',
-    '.cpp': 'C++',
-    '.cs': 'C#',
-    '.cxx': 'C++',
-    '.cbl': 'COBOL',
-    '.cob': 'COBOL',
-    '.cpy': 'COBOL',
-    '.fs': 'F#',
-    '.go': 'Go',
-    '.hs': 'Haskell',
-    '.java': 'Java',
-    '.js': 'JavaScript (Node.js)',
-    '.ts': 'TypeScript',
-    '.kt': 'Kotlin',
-    '.lisp': 'Common Lisp',
-    '.cl': 'Common Lisp',
-    '.m': 'Objective-C',
-    '.ml': 'OCaml',
-    '.pas': 'Pascal',
-    '.php': 'PHP',
-    '.pl': 'Prolog',
-    '.py': 'Python 3',
-    '.rb': 'Ruby',
-    '.rs': 'Rust',
-    '.scala': 'Scala',
-    '.f90': 'Fortran',
-    '.f': 'Fortran',
-    '.for': 'Fortran',
-    '.sh': 'Bash',
-    '.apl': 'APL',
-    '.ss': 'Gerbil',
-    '.jl': 'Julia',
-    '.vb': 'Visual Basic',
-    '.dart': 'Dart',
-    '.zig': 'Zig',
-    '.swift': 'Swift',
-    '.nim': 'Nim',
+LANGUAGE_GUESS = {
+    '.c': 'c',
+    '.c++': 'cpp',
+    '.cc': 'cpp',
+    '.c#': 'csharp',
+    '.cpp': 'cpp',
+    '.cs': 'csharp',
+    '.cxx': 'cpp',
+    '.cbl': 'cobol',
+    '.cob': 'cobol',
+    '.cpy': 'cobol',
+    '.fs': 'fsharp',
+    '.go': 'go',
+    '.hs': 'haskell',
+    '.java': 'java',
+    '.js': 'nodejs',
+    '.ts': 'typescript',
+    '.kt': 'kotlin',
+    '.lisp': 'lisp',
+    '.cl': 'lisp',
+    '.m': 'objective-c',
+    '.ml': 'ocaml',
+    '.pas': 'pascal',
+    '.php': 'php',
+    '.pl': 'prolog',
+    '.py': 'python3',
+    '.rb': 'ruby',
+    '.rs': 'rust',
+    '.scala': 'scala',
+    '.f90': 'fortran',
+    '.f': 'fortran',
+    '.for': 'fortran',
+    '.sh': 'bash',
+    '.apl': 'apl',
+    '.ss': 'gerbil',
+    '.jl': 'julia',
+    '.vb': 'vb',
+    '.dart': 'dart',
+    '.zig': 'zig',
+    '.swift': 'swift',
+    '.nim': 'nim',
 }
 
 GUESS_MAINCLASS = {'Java', 'Kotlin', 'Scala'}
+
 GUESS_MAINFILE = {
     'APL',
     'Bash',
@@ -74,10 +75,41 @@ GUESS_MAINFILE = {
 }
 
 # mapping is used for .kattis-cli.toml file configuration
-LOCAL_TEST_LANGUAGES = {
-    'Python 3': 'python3',
-    'C++': 'cpp',
-    'JavaScript (Node.js)': 'nodejs'
+LOCAL_TO_KATTIS = {
+    'python3': 'Python 3',
+    'python2': 'Python 2',
+    'java': 'Java',
+    'cpp': 'C++',
+    'c++': 'C++',
+    'nodejs': 'JavaScript (Node.js)',
+    'typescript': 'TypeScript',
+    'csharp': 'C#',
+    'kotlin': 'Kotlin',
+    'scala': 'Scala',
+    'rust': 'Rust',
+    'pascal': 'Pascal',
+    'go': 'Go',
+    'haskell': 'Haskell',
+    'ruby': 'Ruby',
+    'php': 'PHP',
+    'lisp': 'Common Lisp',
+    'fortran': 'Fortran',
+    'bash': 'Bash',
+    'apl': 'APL',
+    'gerbil': 'Gerbil',
+    'julia': 'Julia',
+    'vb': 'Visual Basic',
+    'dart': 'Dart',
+    'zig': 'Zig',
+    'swift': 'Swift',
+    'nim': 'Nim',
+    'ocaml': 'OCaml',
+    'fsharp': 'F#',
+    'cobol': 'COBOL',
+    'prolog': 'Prolog',
+    'objective-c': 'Objective-C',
+    'c': 'C',
+    'c#': 'C#'
 }
 
 
@@ -92,19 +124,19 @@ def guess_language(ext: str, files: List[str]) -> str:
         str: guessed language
     """
     if ext == ".C":
-        return "C++"
+        return "cpp"
     ext = ext.lower()
     if ext == ".h":
         if any(f.endswith(".c") for f in files):
-            return "C"
+            return "c"
         else:
-            return "C++"
+            return "cpp"
     if ext == ".py":
         if is_python2(files):
-            return "Python 2"
+            return "python2"
         else:
-            return "Python 3"
-    return KATTIS_LANGUAGE_GUESS.get(ext, '')
+            return "python3"
+    return LANGUAGE_GUESS.get(ext, '')
 
 
 def is_python2(files: List[str]) -> bool:
@@ -137,7 +169,8 @@ def is_python2(files: List[str]) -> bool:
 def guess_mainfile(
         language: str,
         files: List[str],
-        problemid: str) -> Any:
+        problemid: str,
+        lang_config: Dict[Any, Any]) -> Any:
     """Guess the main file.
 
     Args:
@@ -150,10 +183,8 @@ def guess_mainfile(
     if len(files) == 1:
         return files[0]
     # check .kattis-cli.toml file
-    test_language = LOCAL_TEST_LANGUAGES.get(language, '')
-    config_data = config.parse_config(test_language)
-    if 'mainfile' in config_data:
-        return config_data['mainfile'].replace(('<problemid>'), problemid)
+    if 'mainfile' in lang_config:
+        return lang_config['mainfile'].replace(('{problemid}'), problemid)
     for filename in files:
         if os.path.splitext(os.path.basename(filename))[0] in ['main', 'Main']:
             return filename
@@ -177,42 +208,56 @@ def guess_mainfile(
     return files[0]
 
 
-def guess_mainclass(problemid: str, language: str, files: List[str]) -> Any:
+def guess_mainclass(
+        problemid: str,
+        kat_language: str,
+        files: List[str],
+        lang_config: Any) -> Any:
     """Guess the main class.
 
     Args:
-        language (str): programming language
-        files (Tuple[str]): Tuple of files
+        kat_language (str): programming language name used by Kattis
+        files (List[str]): List of files to guess mainclass from
 
     Returns:
-        str: main class
+        str: mainclass name or empty string
     """
-    if language in GUESS_MAINFILE and len(files) > 1:
-        return os.path.basename(guess_mainfile(language, files, problemid))
-    if language in GUESS_MAINCLASS:
-        mainfile = os.path.basename(guess_mainfile(language, files, problemid))
+    if kat_language in GUESS_MAINFILE and len(files) > 1:
+        return os.path.basename(
+            guess_mainfile(
+                kat_language,
+                files,
+                problemid,
+                lang_config))
+    if kat_language in GUESS_MAINCLASS:
+        mainfile = os.path.basename(
+            guess_mainfile(
+                kat_language,
+                files,
+                problemid,
+                lang_config))
         name = os.path.splitext(mainfile)[0]
-        if language == 'Kotlin':
+        if kat_language == 'Kotlin':
             return name[0].upper() + name[1:] + 'Kt'
         return name
     return ''
 
 
-def valididate_language(language: str) -> bool:
+def validate_language(loc_language: str) -> bool:
     """Check if valid language.
 
     Args:
-        language (str): programming language
+        loc_language (str): programming language provided by user
 
     Returns:
         bool: True if valid language, exit otherwise.
     """
-    if language in KATTIS_LANGUAGE_GUESS.values():
+    if loc_language in LOCAL_TO_KATTIS:
         return True
     console = Console()
-    console.print(f'Invalid language: "{language}"', style='bold red')
+    console.print(f'Invalid language: "{loc_language}"', style='bold red')
     console.print('Valid languages are:', style='bold green')
-    for lang in sorted(list(set(KATTIS_LANGUAGE_GUESS.values()))):
+    for lang in sorted(LOCAL_TO_KATTIS.keys()):
         console.print(f'\t\t - {lang}')
     exit(1)
 
@@ -221,16 +266,16 @@ def valid_extension(file: str) -> bool:
     """Check if valid extension.
 
     Args:
-        ext (str): File extension.
+        file (str): File name.
 
     Returns:
-        bool: True if valid extension, exit otherwise.
+        bool: True if valid extension, False otherwise.
     """
     if os.path.isfile(file):
         ext = os.path.splitext(file)
         if len(ext) != 2:
             return False
-        return ext[1] in KATTIS_LANGUAGE_GUESS
+        return ext[1] in LANGUAGE_GUESS
     return False
 
 
@@ -289,21 +334,21 @@ def find_problem_root_folder(
 
 
 def update_args(problemid: str,
-                language: str,
+                loc_language: str,
                 mainclass: str,
                 files: List[str]) -> Any:
     """Check if problemid, language, mainclass, and program files are valid.
 
     Args:
         problemid (str): problemid
-        language (str): programming language
+        loc_language (str): programming language provided by user
         mainclass (str): main class
         files (List[str]): List of files
-        root_folder (str): root folder
 
     Returns:
-        Tuple[str]: Update problemid, language, mainclass, and files
+        Tuple[str]: Update problemid, kattis_language, mainclass, and files
     """
+
     console = Console()
     if not files:
         files = get_coding_files()
@@ -333,21 +378,24 @@ problemid and root problem folder from filename(s) and cwd: {cur_folder}.''',
                           style='bold red')
             sys.exit(1)
     # check if language
-    if not language:
+    if not loc_language:
         _, ext = os.path.splitext(os.path.basename(files[0]))
         # Guess language from files
-        language = guess_language(ext, files)
-        if not language:
+        loc_language = guess_language(ext, files)
+        if not loc_language:
             console.print(f'''\
 No language specified, and I failed to guess language from
 filename extension "{ext}"''')
             sys.exit(1)
     # check if valid language
-    valididate_language(language)
+    validate_language(loc_language)
+    lang_config = config.parse_config(loc_language)
+    kat_language = LOCAL_TO_KATTIS[loc_language]
     if not mainclass:
-        mainclass = guess_mainclass(problemid, language, files)
+        mainclass = guess_mainclass(
+            problemid, kat_language, files, lang_config)
     # print(f'Returning...{problemid=} {language=} {mainclass=} {files=}')
-    return problemid, language, mainclass, files, root_folder
+    return problemid, loc_language, mainclass, files, root_folder, lang_config
 
 
 def get_coding_files() -> List[str]:

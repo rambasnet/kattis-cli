@@ -4,8 +4,7 @@
 from pathlib import Path
 import os
 import shutil
-from kattis_cli.utils import run_program
-from kattis_cli.utils import cpp
+from kattis_cli.utils import run_program, config
 
 
 def test_run_python() -> None:
@@ -17,9 +16,10 @@ def test_run_python() -> None:
             Path.home().joinpath('.kattis-cli.toml'))
     root_folder = Path('tests/cold')
     main_program = str(root_folder.joinpath('python3').joinpath('cold.py'))
+    lang_config = config.parse_config('python3')
     for file in root_folder.joinpath('data').glob('*.in'):
         input_file = str(file)
-        code, ans, _ = run_program.run('Python 3', main_program, input_file)
+        code, ans, _ = run_program.run(lang_config, main_program, input_file)
         output = file.with_suffix('.ans').read_text(encoding='utf-8')
         # print(ans)
         # print(output)
@@ -37,12 +37,13 @@ def test_run_cpp() -> None:
     cpp_folder = Path('tests/cold')
     main_program = str(cpp_folder.joinpath('C++').joinpath('cold.cpp'))
     # print(main_program)
-    code, output, _ = cpp.compile_cpp([main_program])
+    lang_config = config.parse_config('cpp')
+    code, output, _ = run_program.compile_program(lang_config, [main_program])
     assert code == 0
 
     for file in cpp_folder.joinpath('data').glob('*.in'):
         input_file = str(file)
-        code, ans, _ = run_program.run('C++', main_program, input_file)
+        code, ans, _ = run_program.run(lang_config, main_program, input_file)
         output = file.with_suffix('.ans').read_text(encoding='utf-8')
         # print(ans)
         # print(output)

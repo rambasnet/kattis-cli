@@ -2,36 +2,58 @@
 """
 
 import subprocess
-from typing import Tuple, List
-
-from . import config
-from . import utility
+from typing import Tuple, List, Dict, Any
 
 
-def run(language: str, main_program: str,
+def compile_program(
+        lang_config: Dict[Any, Any], files: List[str]) -> Tuple[int, str, str]:
+    """Compile Program.
+
+    Args:
+        lang_config (Dict[Any, Any]): language config
+        files (List[str]): List of files
+    """
+    command = lang_config['compile'].split()
+    command.extend(files)
+    # print(f'{command=}')
+    # print(f'{files}')
+    # Set the g++ command and its arguments in a list
+    # command = [compiler, '-std=c++11', '-o', 'output_program', 'cold.cpp']
+
+    # Use Popen to execute the command
+    process = subprocess.Popen(command,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE)
+
+    # Wait for the process to finish and get the output and errors
+    stdout, stderr = process.communicate()
+
+    # Print the output and errors
+    output = stdout.decode('utf-8')
+    error = stderr.decode('utf-8')
+    return process.returncode, output, error
+
+
+def run(lang_config: Dict[Any, Any],
+        mainclass: str,
         input_file: str) -> Tuple[int, str, str]:
     """Run the program with the given input file and return the output.
 
     Args:
-        language (str): programming language
-        main_program (str): main file
+        lang_config (str): programming language config
+        mainclass (str): main file
         input_file (str): input file
 
     Returns:
         Tuple[str, str]: program output and error
     """
 
-    test_language = utility.LOCAL_TEST_LANGUAGES.get(language, '')
-    config_data = config.parse_config(test_language)
-    program = config_data['compiler']
+    program = lang_config['execute'].replace("{mainfile}", mainclass).split()
     # print(f'{program=} {language} {test_language}')
-    if not program:
-        raise NotImplementedError(
-            f"Language {language} not supported.")
-    if language.strip().lower() == 'c++':
-        code, ans, error = execute(['./a.out'], input_file)
-    else:
-        code, ans, error = execute([program, main_program], input_file)
+    # if language.strip().lower() == 'c++':
+    #    code, ans, error = execute(['./a.out'], input_file)
+    # else:
+    code, ans, error = execute(program, input_file)
     return code, ans, error
 
 

@@ -60,15 +60,21 @@ def test(
         files: Tuple[str]) -> None:
     """Test solution with sample files.
     """
-    problemid, language, mainclass, _files, root_folder = utility.update_args(
-        problemid, language, mainclass, list(files))
+    problemid, loc_language, mainclass, _files, root_folder, lang_config = \
+        utility.update_args(problemid, language, mainclass, list(files))
     # print('After - ', f'{problemid=} {language=} {mainclass=} {_files=}')
+    # lang_config = config.parse_config(language)
+    if not mainclass:
+        mainclass = utility.guess_mainfile(
+            language, _files, problemid, lang_config)
+
     test_solution.test_samples(
         problemid,
-        language,
+        loc_language,
         mainclass,
         root_folder,
-        _files)
+        _files,
+        lang_config)
 
 
 @main.command(help='Submit a solution to Kattis.')
@@ -89,10 +95,14 @@ def submit(problemid: str, language: str,
            files: Tuple[str]) -> None:
     """Submit a solution to Kattis.
     """
-    problemid, language, mainclass, _files, _ = utility.update_args(
-        problemid, language, mainclass, list(files))
+    problemid, language, mainclass, _files, _, lang_config = \
+        utility.update_args(
+            problemid, language, mainclass, list(files))
     # Finally, submit the solution
     # print(f'{problemid=} {language=} {mainclass=} {tag=} {force=} {_files=}')
+    if not mainclass:
+        mainclass = utility.guess_mainfile(
+            language, _files, problemid, lang_config)
     kattis.submit_solution(_files, problemid,
                            language, mainclass,
                            tag, force)
