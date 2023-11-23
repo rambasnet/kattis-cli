@@ -60,7 +60,6 @@ python -m pip install kattis-cli --upgrade
 - run the following command and enter your Kattis credentials
 - this will create a .kattisrc file in your home directory
 
-
 ```bash
 kattis setup
 ```
@@ -98,7 +97,7 @@ kattis info
 
 ### Test a solution locally
 
-- currently the following languages have been tested: Python 3, C++, NodeJS, C
+- currently the following languages have been tested: Python 3, C++, NodeJS, C, Java
 - make sure CLI compilers are in your PATH
 - make sure python3 files have first line shebang: !/usr/bin/env python3
     - or have extensions .py3
