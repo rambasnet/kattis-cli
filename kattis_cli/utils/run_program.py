@@ -49,10 +49,7 @@ def run(lang_config: Dict[Any, Any],
     """
 
     program = lang_config['execute'].replace("{mainfile}", mainclass).split()
-    # print(f'{program=} {language} {test_language}')
-    # if language.strip().lower() == 'c++':
-    #    code, ans, error = execute(['./a.out'], input_file)
-    # else:
+    # print(f'{program=}')
     code, ans, error = execute(program, input_file)
     return code, ans, error
 

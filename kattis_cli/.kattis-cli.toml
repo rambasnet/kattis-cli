@@ -30,6 +30,6 @@ execute = "node {mainfile}"
 mainfile = "{problemid}.js"
 
 [java]
-compile = "javac"
+compile = "javac -d ."
 execute = "java -cp . {mainfile}"
 mainfile = "{problemid}"
