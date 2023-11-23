@@ -103,8 +103,9 @@ def submit(problemid: str, language: str,
     if not mainclass:
         mainclass = utility.guess_mainfile(
             language, _files, problemid, lang_config)
+    kat_lang = utility.LOCAL_TO_KATTIS[language]
     kattis.submit_solution(_files, problemid,
-                           language, mainclass,
+                           kat_lang, mainclass,
                            tag, force)
 
 

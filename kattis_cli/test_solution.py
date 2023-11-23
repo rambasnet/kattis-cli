@@ -69,7 +69,7 @@ def test_samples(
             exit(1)
         # mainfile = './a.out'
         console.print('Compiled successfully!', style='bold green')
-        console.print('Output file: a.out', style='bold green')
+        # console.print('Output file: a.out', style='bold green')
     # console.print(in_files)
     count = 0
     total = len(in_files)

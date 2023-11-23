@@ -167,14 +167,14 @@ def is_python2(files: List[str]) -> bool:
 
 
 def guess_mainfile(
-        language: str,
+        kat_language: str,
         files: List[str],
         problemid: str,
         lang_config: Dict[Any, Any]) -> Any:
     """Guess the main file.
 
     Args:
-        language (str): programming language
+        kat_language (str): programming language name used by Kattis
         files (List[str]): Tuple of files
 
     Returns:
@@ -195,11 +195,11 @@ def guess_mainfile(
         try:
             with open(filename, 'r', encoding='utf-8') as f:
                 conts = f.read()
-                if language in [
+                if kat_language in [
                         'Java', 'Rust', 'Scala', 'Kotlin'] and re.search(
                         r' main\s*\(', conts):
                     return filename
-                if language == 'Pascal' and re.match(
+                if kat_language == 'Pascal' and re.match(
                         r'^\s*[Pp]rogram\b', conts):
                     return filename
         except IOError:

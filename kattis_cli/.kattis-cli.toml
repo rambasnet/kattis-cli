@@ -28,3 +28,8 @@ mainfile = "{problemid}.c"
 compile = "node -c"
 execute = "node {mainfile}"
 mainfile = "{problemid}.js"
+
+[java]
+compile = "javac"
+execute = "java -cp . {mainfile}"
+mainfile = "{problemid}"
