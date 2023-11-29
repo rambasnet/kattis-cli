@@ -13,6 +13,7 @@ from rich.live import Live
 from rich.align import Align
 from rich import box
 from rich.prompt import Confirm
+from rich.markup import escape
 
 from kattis_cli import kattis
 from kattis_cli.utils import run_program, utility
@@ -65,11 +66,10 @@ def test_samples(
     if lang_config['compile']:
         ex_code, ans, error = run_program.compile_program(lang_config, files)
         if ex_code != 0:  # compilation error; exit code
-            console.print(error, style='bold red')
+            console.print(escape(error), style='bold red')
             exit(1)
         # mainfile = './a.out'
         console.print('Compiled successfully!', style='bold green')
-        # console.print('Output file: a.out', style='bold green')
     # console.print(in_files)
     count = 0
     total = len(in_files)
@@ -140,8 +140,8 @@ def test_samples(
             table.add_row(in_filename,
                           input_content.decode('utf-8'),
                           out_filename,
-                          expected.decode('utf-8'),
-                          ans,
+                          escape(expected.decode('utf-8')),
+                          escape(ans),
                           result)
             if code != 0 and 'SyntaxError: ' in error:
                 table.columns[4].style = 'bold red'
