@@ -12,6 +12,7 @@ Based on Official Kattis CLI: [https://github.com/Kattis/kattis-cli](https://git
 
 - Use Command Line or PowerShell
 - Make sure python is in your PATH
+    - Install Python from Windows Store
 - if you get codec error while running kattis-cli, run the following command in Command Prompt:
 
 ```bash
@@ -44,6 +45,9 @@ If you've Python version 3.8 or higher, you can skip creating virtual environmen
 pip install kattis-cli
 python -m pip install kattis-cli
 ```
+
+- on Windows add the path shown in the output of the above command to your PATH environment variable
+
 
 ## Update Kattis-CLI
 
