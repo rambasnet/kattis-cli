@@ -53,26 +53,18 @@ def show_problem_metadata(problemid: str = '') -> Dict[Any, Any]:
             justify="center",
             style="cyan",
             no_wrap=False)
-        table.add_column(
-            "Source",
-            justify="center",
-            style="cyan",
-            no_wrap=False)
-        # [link=https://www.willmcgugan.com]blog[/link]
+
         p_id = metadata['problemid']
         problem_link = f"[link={settings.KATTIS_PROBLEM_URL}{p_id}]"
         problem_link += f"{p_id}[/link]"
-        source = metadata['source']
-        sources_link = f"[link={settings.KATTIS_SOURCE_URL}{source}]"
-        sources_link += f"{source}[/link]"
         # console.print(sources_link)
         table.add_row(problem_link,
                       metadata['difficulty'],
                       metadata['cpu_limit'],
                       metadata['mem_limit'],
                       str(metadata['submissions']),
-                      str(metadata['accepted']),
-                      sources_link)
+                      str(metadata['accepted'])
+                      )
 
         console.print(table)
     elif problemid:

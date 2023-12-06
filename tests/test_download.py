@@ -1,6 +1,7 @@
 """Module to test the download module.
 """
 
+import os
 import unittest
 from pathlib import Path
 import shutil
@@ -46,16 +47,16 @@ class TestDownload(unittest.TestCase):
         self.assertTrue(Path.cwd().joinpath(folder).exists())
         shutil.rmtree(Path.cwd().joinpath(folder))
 
-    def test_make_soup(self) -> None:
+    def test_download_html_exception(self) -> None:
         """Test make_soup function.
         """
         self.assertRaises(
             requests.exceptions.InvalidURL,
-            download.make_soup,
+            download.download_html,
             "123blah")
         self.assertRaises(
             requests.exceptions.InvalidURL,
-            download.make_soup,
+            download.download_html,
             "123blahblah")
 
     def test_download_sample_data_exception(self) -> None:
@@ -96,3 +97,22 @@ class TestDownload(unittest.TestCase):
         self.assertTrue(Path.cwd().joinpath(
             problemid).joinpath(f'{problemid}.yaml').exists())
         shutil.rmtree(Path.cwd().joinpath(problemid))
+
+    def test_parse_metadata_success(self) -> None:
+        """Test download_problem.
+        """
+        print(os.getenv('PYTEST_CURRENT_TEST'))
+        problemid = 'karlcoder'
+        test_file = Path.cwd().joinpath('tests').joinpath('karlcoder.html')
+        with open(test_file, 'r', encoding='utf-8') as f:
+            html = f.read()
+        # pylint: disable=protected-access
+        metadata = download._parse_metadata(problemid, html)
+        # print(metadata)
+        self.assertEqual(metadata['problemid'], problemid)
+        self.assertEqual(metadata['title'], 'Karl Coder')
+        self.assertEqual(metadata['cpu_limit'], '1 second')
+        self.assertEqual(metadata['mem_limit'], '1024 MB')
+        self.assertEqual(metadata['submissions'], 0)
+        self.assertEqual(metadata['difficulty'], '4.0 Medium')
+        self.assertEqual(metadata['accepted'], 0)

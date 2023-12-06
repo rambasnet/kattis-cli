@@ -34,6 +34,19 @@ def create_problem_folder(problemid: str) -> Path:
     return root_problem_folder
 
 
+def download_html(problemid: str) -> str:
+    """Get html content from Kattis problem page.
+
+    Args:
+        problemid (str): problemid
+    """
+    response = requests.get(settings.KATTIS_PROBLEM_URL + problemid, timeout=5)
+    if response.status_code == 200:
+        return response.text.strip()
+    else:
+        raise requests.exceptions.InvalidURL(f"Error: {response.status_code}")
+
+
 def load_problem_metadata(problemid: str = '') -> Dict[Any, Any]:
     """Load problem metadata from problem folder.
 
@@ -73,43 +86,31 @@ def load_problem_metadata(problemid: str = '') -> Dict[Any, Any]:
                 metadata['accepted'] = 0
                 config.update_problem_metadata(problemid, metadata)
     else:
-        metadata = _download_metadata(root_problem_folder, problemid)
+        html = download_html(problemid)
+        metadata = _parse_metadata(problemid, html)
+        save_metadata(problemid, metadata)
     return metadata
 
 
-def make_soup(problemid: str) -> BeautifulSoup:
-    """Scrape kattis page given problemid and return a BeautifulSoup object.
+def _parse_metadata(problemid: str,
+                    html: str,
+                    ) -> Dict[str, Any]:
+    """Parse metadata from Kattis problm page.
+    This function should only be called if
+    the metadata file does not exist.
 
     Args:
-        problemid (str): problemid
-
-    Returns:
-        BeautifulSoup: BeautifulSoup object of the problem page.
-    """
-    response = requests.get(settings.KATTIS_PROBLEM_URL + problemid, timeout=5)
-    if response.status_code == 200:
-        return BeautifulSoup(response.text.strip(), "html.parser")
-    else:
-        raise requests.exceptions.InvalidURL(f"Error: {response.status_code}")
-
-
-def _download_metadata(root_problem_folder: Path,
-                       problemid: str) -> Dict[str, Any]:
-    """Download problem metadata from Kattis and save them to problem folder.
-    This function should only be called if the metadata file does not exist.
-
-    Args:
+        root_problem_folder (Path): problem folder
         problemid (str): Kattis problemid
 
     Returns:
         Dict: problem metadata
     """
 
-    soup = make_soup(problemid)
-
+    soup = BeautifulSoup(html, "html.parser")
     meta_data = {'problemid': problemid, 'title': '',
                  'cpu_limit': 'None', 'mem_limit': 'None',
-                 'difficulty': 'None', 'source': 'None',
+                 'difficulty': 'None',
                  'submissions': 0, 'accepted': 0}
 
     # get the title of the problem
@@ -118,26 +119,41 @@ def _download_metadata(root_problem_folder: Path,
         meta_data["title"] = title.text
 
     # get the cpu time limit, memory limit, difficulty, and source
-    data = soup.find_all("div", {"class": "metadata_list-item"})
-    name_mapping = {'cpu_limit': 'cpu_limit',
-                    'mem_limit': 'mem_limit',
-                    'difficulty': 'difficulty',
-                    'source': 'source',
+    data = soup.find("div", {"class": "metadata-grid"})
+    name_mapping = {'metadata-cpu-card': 'cpu_limit',
+                    'metadata-memmory-card': 'mem_limit',
+                    'metadata-difficulty-card': 'difficulty',
                     }
-    for item in data:
-        try:
-            data_name = item.attrs['data-name'].split('-')[1]
-            if data_name in name_mapping:
-                children = item.findChildren('span')
-                meta_data[name_mapping[data_name]] = children[-1].text.strip()
-        except BaseException:
-            pass
 
-    # save metadata to file
+    for key, key1 in name_mapping.items():
+        try:
+            value = ''
+            div = data.findChild('div', {'class': key})  # type: ignore
+            if key == 'metadata-difficulty-card':
+                span = div.findChild(  # type: ignore
+                    'span', {
+                        'class': 'difficulty_number'})
+                value += span.text.strip() + ' '  # type: ignore
+            span = div.findChild('span',  # type: ignore
+                                 {'class': 'text-blue-200'})
+            value += span.text.strip()  # type: ignore
+            meta_data[key1] = value
+        except AttributeError:
+            pass
+    return meta_data
+
+
+def save_metadata(problemid: str, metadata: Dict[str, Any]) -> None:
+    """Save metadata to problem folder.
+
+    Args:
+        problemid (str): problemid
+        metadata (Dict[str, Any]): metadata
+    """
+    root_problem_folder = create_problem_folder(problemid)
     metadata_file = root_problem_folder.joinpath(f"{problemid}.yaml")
     with open(metadata_file, "w", encoding='utf-8') as f:
-        yaml.dump(meta_data, f, default_flow_style=False, allow_unicode=True)
-    return meta_data
+        yaml.dump(metadata, f, default_flow_style=False, allow_unicode=True)
 
 
 def download_sample_data(problemid: str) -> None:
