@@ -135,7 +135,7 @@ def _parse_metadata(problemid: str,
                         'class': 'difficulty_number'})
                 value += span.text.strip() + ' '  # type: ignore
             span = div.findChild('span',  # type: ignore
-                                {'class': 'text-blue-200'})
+                                 {'class': 'text-blue-200'})
             value += span.text.strip()  # type: ignore
             meta_data[key1] = value
         except AttributeError:
