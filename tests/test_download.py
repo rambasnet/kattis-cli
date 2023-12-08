@@ -120,7 +120,7 @@ class TestDownload(unittest.TestCase):
     def test_parse_metadata_success2(self) -> None:
         """Test download_problem.
         """
-        #print(os.getenv('PYTEST_CURRENT_TEST'))
+        # print(os.getenv('PYTEST_CURRENT_TEST'))
         problemid = 'prinsesse'
         test_file = Path.cwd().joinpath('tests').joinpath('prinsesse.html')
         with open(test_file, 'r', encoding='utf-8') as f:
