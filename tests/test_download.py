@@ -98,7 +98,7 @@ class TestDownload(unittest.TestCase):
             problemid).joinpath(f'{problemid}.yaml').exists())
         shutil.rmtree(Path.cwd().joinpath(problemid))
 
-    def test_parse_metadata_success(self) -> None:
+    def test_parse_metadata_success1(self) -> None:
         """Test download_problem.
         """
         print(os.getenv('PYTEST_CURRENT_TEST'))
@@ -108,11 +108,31 @@ class TestDownload(unittest.TestCase):
             html = f.read()
         # pylint: disable=protected-access
         metadata = download._parse_metadata(problemid, html)
-        # print(metadata)
+        #print(metadata)
         self.assertEqual(metadata['problemid'], problemid)
         self.assertEqual(metadata['title'], 'Karl Coder')
         self.assertEqual(metadata['cpu_limit'], '1 second')
         self.assertEqual(metadata['mem_limit'], '1024 MB')
         self.assertEqual(metadata['submissions'], 0)
         self.assertEqual(metadata['difficulty'], '4.0 Medium')
+        self.assertEqual(metadata['accepted'], 0)
+
+
+    def test_parse_metadata_success2(self) -> None:
+        """Test download_problem.
+        """
+        print(os.getenv('PYTEST_CURRENT_TEST'))
+        problemid = 'prinsesse'
+        test_file = Path.cwd().joinpath('tests').joinpath('prinsesse.html')
+        with open(test_file, 'r', encoding='utf-8') as f:
+            html = f.read()
+        # pylint: disable=protected-access
+        metadata = download._parse_metadata(problemid, html)
+        #print(metadata)
+        self.assertEqual(metadata['problemid'], problemid)
+        self.assertEqual(metadata['title'], 'The Princess and the Pea')
+        self.assertEqual(metadata['cpu_limit'], '1 second')
+        self.assertEqual(metadata['mem_limit'], '1024 MB')
+        self.assertEqual(metadata['submissions'], 0)
+        self.assertEqual(metadata['difficulty'], '1.8\n                                                - 7.2 Hard')
         self.assertEqual(metadata['accepted'], 0)
