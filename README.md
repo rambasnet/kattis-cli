@@ -88,7 +88,7 @@ kattis --help
 kattis get <problem_id>
 ```
 
-![Get problem id from URL](images/get.png)
+![Get problem id from URL](images/kattis_get.png)
 
 ### Display problem metadata
 
@@ -97,7 +97,7 @@ cd <problem_id>
 kattis info
 ```
 
-![Problem info](images/info.png)
+![Problem info](images/kattis_info.png)
 
 ### Test a solution locally
 
@@ -113,7 +113,7 @@ cd <problem_id>
 kattis test
 ```
 
-![Test](images/test.png)
+![Test](images/kattis_test.png)
 
 ### Submit a problem
 
@@ -130,8 +130,7 @@ cd <problem_id>
 kattis submit
 ```
 
-![Progress](images/progress.png)
-![Result](images/result.png)
+![Result](images/kattis_verdict.png)
 
 ## Contributing
 
