@@ -1,4 +1,4 @@
-"""Tester module for KattisKitten.
+"""Tester module for Kattis.
 """
 
 from typing import Any, List, Dict
