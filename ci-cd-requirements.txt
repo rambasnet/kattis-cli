@@ -1,4 +1,12 @@
 pytest
 mypy
 flake8
-hypothesis
+requests
+rich
+pyyaml
+types-PyYAML
+types-requests
+beautifulsoup4
+types-beautifulsoup4
+tomlkit
+lxml
