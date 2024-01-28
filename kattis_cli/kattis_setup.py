@@ -92,8 +92,8 @@ def setup() -> None:
                     headers=_HEADERS,
                     timeout=10,
                 )
-                console.print(res.status_code)
-                console.print(res.text)
+                # console.print(res.status_code)
+                # console.print(res.text)
                 if res.status_code == 200:
                     with open(_KATTISRC, "w", encoding='utf-8') as f:
                         f.write(res.text)
