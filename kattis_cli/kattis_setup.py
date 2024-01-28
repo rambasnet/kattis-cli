@@ -49,7 +49,6 @@ def setup() -> None:
     """Setup Kattis CLI.
     """
     console = Console()
-    console.print("Kattis CLI Setup!")
     console.print(":cat: Welcome to Kattis CLI! :cat:", style="bold blue")
     if check_kattisrc():
         console.print(
@@ -79,13 +78,13 @@ def setup() -> None:
                     break
 
             response = kattis.login(_LOGIN_URL, username, password)
-            console.print("code=", response.status_code)
-            console.print("text=", response.text)
+            # console.print("code=", response.status_code)
+            # console.print("text=", response.text)
             if response.status_code == 200:
                 console.print(":rocket: Login successful!")
                 # download kattisrc
-                cookies = response.cookies
-                console.print(cookies)
+                # cookies = response.cookies
+                # console.print(cookies)
                 # cookies = response.cookies.RequestsCookieJar
                 res = requests.get(
                     _KATTISRCURL,

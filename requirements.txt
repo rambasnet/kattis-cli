@@ -12,3 +12,4 @@ tomlkit
 lxml
 poetry
 autopep8
+kattis-cli

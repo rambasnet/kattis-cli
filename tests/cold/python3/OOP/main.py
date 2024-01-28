@@ -11,12 +11,13 @@ https://open.kattis.com/problems/cold
 """
 
 import sys
-import functools
-from temperature import Temperature
 from typing import Any, List
+from temperature import Temperature
 
 
 class Solution(object):
+    """ Solution to the problem"""
+
     def __init__(self) -> None:
         """
         Represents a solution to the problem

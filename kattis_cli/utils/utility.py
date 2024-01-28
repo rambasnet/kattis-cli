@@ -166,6 +166,7 @@ def is_python2(files: List[str]) -> bool:
     return False
 
 
+# flake8: noqa: C901
 def guess_mainfile(
         kat_language: str,
         files: List[str],
@@ -333,6 +334,7 @@ def find_problem_root_folder(
     raise FileNotFoundError("Error: Problem root folder not found.")
 
 
+# flake8: noqa: C901
 def update_args(problemid: str,
                 loc_language: str,
                 mainclass: str,

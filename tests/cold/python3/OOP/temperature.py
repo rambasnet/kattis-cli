@@ -61,8 +61,6 @@ class Temperature(object):
     def __lt__(self, other: 'Temperature') -> bool:
         if not isinstance(other, Temperature):
             return NotImplemented
-            # special value which should be returned by the binary special methods
-            # to indicate the operation is not implemented wrt the other type
         return self._temp < other._temp
 
     def __gt__(self, other: 'Temperature') -> bool:

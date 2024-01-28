@@ -143,6 +143,8 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 - create virtual environment with pypy 3.8 or higher
 - using conda the following command creates kattis virtual environment with pypy3.8
 
+### Using conda and virtual environment
+
 ```bash
 conda create -c conda-forge -n kattis pypy python=3.8
 conda activate kattis
@@ -160,4 +162,14 @@ pip install -r requirements.txt
 make
 ./build.sh
 pip install dist/kattis_cli-x.x.x-py3-none-any.whl --force-reinstall  
+```
+
+### Using Docker
+
+- clone this repo
+- run the following command to build and run the Dockerfile provided in this repo
+- if using Windows, run the following command in git-bash Terminal
+
+```bash
+bash run.sh
 ```

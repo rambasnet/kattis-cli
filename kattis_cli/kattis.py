@@ -218,6 +218,8 @@ def get_submission_status(
         headers=_HEADERS, timeout=10)
     return reply.json()
 
+# flake8: noqa: C901
+
 
 def parse_row_html(html: str) -> Any:
     """Parse row_html value from Kattis JASON response.
