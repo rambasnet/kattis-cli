@@ -5,7 +5,7 @@ CHECK_STYLE = flake8
 FIX_STYLE = autopep8 --in-place --recursive --aggressive --aggressive
 
 .PHONY: all
-all: check-style check-type run-test
+all: check-style fix-style check-type run-test clean
 
 .PHONY: check-type
 check-type:
@@ -27,9 +27,10 @@ fix-style:
 
 .PHONY: clean
 clean:
-	rm -rf __pycache__
-	rm -rf .pytest_cache
-	rm -rf .mypy_cache
-	rm -rf .hypothesis
-	rm -rf .coverage
+	rm -rf `find . -type d -name __pycache__`
+	rm -rf `find . -type d -name .pytest_cache`
+	rm -rf `find . -type d -name .mypy_cache`
+	rm -rf `find . -type d -name .hypothesis`
+	rm -rf `find . -type d -name .coverage`
+	rm -rf `find . -type d -name .tox`
 	
