@@ -1,11 +1,16 @@
 # Kattis-CLI
 
 Kattis CLI - download, test and submit Kattis problems using CLI.
-Based on Official Kattis CLI: [https://github.com/Kattis/kattis-cli](https://github.com/Kattis/kattis-cli)
+Inspired by the official Kattis CLI: [https://github.com/Kattis/kattis-cli](https://github.com/Kattis/kattis-cli)
+
+![Tests](https://github.com/rambasnet/kattis-cli/actions/workflows/ci-test.yml/badge.svg)
+[![PyPI version](https://badge.fury.io/py/kattis-cli.svg)](https://badge.fury.io/py/kattis-cli)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/kattis-cli)](https://pypi.org/project/kattis-cli/)
+[![PyPI - License](https://img.shields.io/pypi/l/kattis-cli)](https://pypi.org/project/kattis-cli/)
 
 ## Requirements
 
-- Python 3.8+ (PyPy preferred as Kattis uses PyPy to run your code)
+- Python 3.8+ (PyPy preferred as Kattis uses PyPy to run your Python3 solutions)
 - [Kattis account](https://open.kattis.com/login/email)
 
 ## Windows
