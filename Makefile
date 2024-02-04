@@ -9,11 +9,11 @@ all: check-style check-type run-test
 
 .PHONY: check-type
 check-type:
-	$(CHECK_TYPE) .
+	$(CHECK_TYPE) kattis_cli
 
 .PHONY: check-style
 check-style:
-	$(CHECK_STYLE) .
+	$(CHECK_STYLE) kattis_cli
 
 # discover and run all tests
 .PHONY: run-test
@@ -22,7 +22,8 @@ run-test:
 
 .PHONY: fix-style
 fix-style:
-	$(FIX_STYLE) .
+	$(FIX_STYLE) kattis_cli
+	$(FIX_STYLE) tests
 
 .PHONY: clean
 clean:
