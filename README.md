@@ -124,8 +124,8 @@ kattis test -a 6 # Answer accepted upto 6 decimal places of accuracy
 ### Testing floating point results
 
 - for floating point ouput, problem provides the tolerance or accuracy upto certain decimal points
-- kattis cli uses `-a <N>` switch after kattis test command to provide the decimal places of accuracy
-- e.g., the following command checks for accuracy upto 6 decimal points or absolute error upto {10^-6}
+- one can use `-a <N>` switch after kattis test command to provide the decimal places of accuracy
+- e.g., the following command checks for accuracy upto 6 decimal points or absolute error upto $10^-6$
 
 ```bash
 kattis test -a 6
