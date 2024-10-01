@@ -1,6 +1,7 @@
 """Tester module for Kattis.
 """
 
+from math import inf
 from typing import Any, List, Dict
 import glob
 import time
@@ -19,13 +20,33 @@ from kattis_cli import kattis
 from kattis_cli.utils import run_program, utility
 
 
+def compare_floats(expected: str, ans: str, places: float) -> bool:
+    """Compare two floating point numbers with given accuracy.
+
+    Args:
+        expected (str): expected result
+        ans (str): actual result
+        places (float): decimal places for approximation
+
+    Returns:
+        bool: True if the two numbers are equal within the given accuracy
+    """
+    try:
+        flt_expected = float(expected)
+        flt_ans = float(ans)
+        return abs(flt_expected - flt_ans) <= 10**(-places)
+    except ValueError:
+        return False
+
+
 def test_samples(
         problemid: str,
         loc_language: str,
         mainclass: str,
         problem_root_folder: str,
         files: List[str],
-        lang_config: Dict[Any, Any]
+        lang_config: Dict[Any, Any],
+        accuracy: float = inf
 ) -> None:
     """Tests a problem by running all the .in files in
     the problem folder and comparing the output to the .ans files.
@@ -126,11 +147,18 @@ def test_samples(
             if code != 0:
                 ans = error
             # console.print(f"{ans=} {error=}")
-            if expected == ans.encode('utf-8').strip():
-                result = "[bold green]✅[/bold green]"
-                count += 1
-            else:
-                result = "[bold red]❌[/bold red]"
+            if accuracy == inf:  # string comparison
+                if expected == ans.encode('utf-8').strip():
+                    result = "[bold green]✅[/bold green]"
+                    count += 1
+                else:
+                    result = "[bold red]❌[/bold red]"
+            else:  # floating point comparison
+                if compare_floats(expected.decode('utf-8'), ans, accuracy):
+                    result = "[bold green]✅[/bold green]"
+                    count += 1
+                else:
+                    result = "[bold red]❌[/bold red]"
 
             # UI Table Row ---
             in_filename = Path(in_file).parts[-1]

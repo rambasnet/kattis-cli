@@ -87,13 +87,13 @@ kattis --help
 - problem id can be found in the last part of the URL of the problem
 - example: [https://open.kattis.com/problems/cold](https://open.kattis.com/problems/cold) => problem id: **cold**
 
-![Problem id](images/problemid.png)
+![Problem id](./images/problemid.png)
 
 ```bash
 kattis get <problem_id>
 ```
 
-![Get problem id from URL](images/kattis_get.png)
+![Get problem id from URL](./images/kattis_get.png)
 
 ### Display problem metadata
 
@@ -102,9 +102,11 @@ cd <problem_id>
 kattis info
 ```
 
-![Problem info](images/kattis_info.png)
+![Problem info](./images/kattis_info.png)
 
 ### Test a solution locally
+
+![Test](images/kattis_test.png)
 
 - currently the following languages have been tested: Python 3, C++, NodeJS, C, Java
 - make sure CLI compilers are in your PATH
@@ -115,10 +117,20 @@ kattis info
 
 ```bash
 cd <problem_id>
-kattis test
+kattis test # for exact comparion of answers (string and int)
+kattis test -a 6 # Answer accepted upto 6 decimal places of accuracy
 ```
 
-![Test](images/kattis_test.png)
+### Testing floating point results
+
+- for floating point ouput, problem provides the tolerance or accuracy upto certain decimal points
+- kattis cli uses `-a <N>` switch after kattis test command to provide the decimal places of accuracy
+- e.g., the following command checks for accuracy upto 6 decimal points or absolute error upto {10^-6}
+
+```bash
+kattis test -a 6
+```
+
 
 ### Submit a problem
 

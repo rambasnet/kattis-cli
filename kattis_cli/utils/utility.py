@@ -66,7 +66,6 @@ GUESS_MAINFILE = {
     'Common Lisp',
     'Pascal',
     'PHP',
-    'Python 2',
     'Python 3',
     'Ruby',
     'Rust',
@@ -77,7 +76,6 @@ GUESS_MAINFILE = {
 # mapping is used for .kattis-cli.toml file configuration
 LOCAL_TO_KATTIS = {
     'python3': 'Python 3',
-    'python2': 'Python 2',
     'java': 'Java',
     'cpp': 'C++',
     'c++': 'C++',
@@ -132,38 +130,8 @@ def guess_language(ext: str, files: List[str]) -> str:
         else:
             return "cpp"
     if ext == ".py":
-        if is_python2(files):
-            return "python2"
-        else:
-            return "python3"
+        return "python3"
     return LANGUAGE_GUESS.get(ext, '')
-
-
-def is_python2(files: List[str]) -> bool:
-    """Check if python2.
-
-    Args:
-        files (List[str]): Tuple of files.
-
-    Returns:
-       bool: True if python2, False otherwise.
-    """
-    python2 = re.compile(r'^\s*\bprint\b *[^ \(\),\]]|\braw_input\b')
-    for filename in files:
-        try:
-            with open(filename, 'r', encoding='utf-8') as f:
-                for index, line in enumerate(f):
-                    # print(index, line)
-                    if index == 0 and line.startswith('#!'):
-                        if 'python2' in line:
-                            return True
-                        if 'python3' in line:
-                            return False
-                    if python2.search(line.split('#')[0]):
-                        return True
-        except IOError:
-            return False
-    return False
 
 
 # flake8: noqa: C901

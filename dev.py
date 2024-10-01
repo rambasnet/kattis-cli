@@ -1,6 +1,7 @@
 """ Main module for the kattis_cli package."""
-__version__ = '0.1.6'
+__version__ = '1.0.2'
 
+from math import inf
 from typing import Tuple
 from rich.console import Console
 import click
@@ -52,11 +53,14 @@ def info(problemid: str) -> None:
 @click.option('-p', '--problemid', default='', help='Problem ID')
 @click.option('-l', '--language', default='', help='Sets language')
 @click.option('-m', '--mainclass', default='', help='Sets mainclass/mainfile')
+@click.option('-a', '--accuracy', default=inf,
+              help='Decimal places for float comparison')
 @click.argument('files', nargs=-1, required=False)
 def test(
         problemid: str,
         language: str,
         mainclass: str,
+        accuracy: float,
         files: Tuple[str]) -> None:
     """Test solution with sample files.
     """
@@ -74,7 +78,8 @@ def test(
         mainclass,
         root_folder,
         _files,
-        lang_config)
+        lang_config,
+        accuracy)
 
 
 @main.command(help='Submit a solution to Kattis.')
