@@ -21,7 +21,7 @@ def find_prob() -> DefaultDict:
 def solve() -> None:
     """Main function to solve the problem.
     """
-    N = int(sys.stdin.readline())
+    _ = int(sys.stdin.readline())
     nums = map(int, sys.stdin.readline().split())
     ways = find_prob()
     ans = 0
