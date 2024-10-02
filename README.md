@@ -49,20 +49,24 @@ If you've Python version 3.8 or higher, you can skip creating virtual environmen
 ```bash
 pip install kattis-cli
 python -m pip install kattis-cli
+kattis --version
 ```
 
 - on Windows add the path shown in the output of the above command to your PATH environment variable
 
-
-## Update Kattis-CLI
+## Update/Upgrade Kattis-CLI
 
 - remove or rename **.kattis-cli.toml** file in your home directory
 - activate virtual environment if you've created one for kattis-cli
 
 ```bash
+kattis --version
 pip install kattis-cli --upgrade
 python -m pip install kattis-cli --upgrade
 ```
+
+- on Windows add the path shown in the output of the above command to your PATH environment variable
+
 
 ## Kattis configuration
 

@@ -1,5 +1,13 @@
-""" Main module for the kattis_cli package."""
-__version__ = '1.0.2'
+""" Main module for the kattis_cli package.
+This is the main.py file for the kattis_cli package.
+
+Change the contents here instead of main.py.
+build.sh script copies the contents of this file to main.py.
+
+Change the __version__ to match in pyproject.toml
+Has to be higher than the pypi version.
+"""
+__version__ = '1.0.3'
 
 from math import inf
 from typing import Tuple
@@ -15,10 +23,12 @@ import kattis_cli.kattis_setup as kattis_setup
 
 
 @click.group()
+@click.version_option(version=__version__, prog_name='kattis-cli')
 def main() -> None:
     """
     CLI for downloading, testing and submitting Kattis problems.
     """
+    pass
 
 
 @main.command(help='Download sample data & metadata.')
@@ -34,7 +44,7 @@ def get(problemid: str) -> None:
     except requests.exceptions.InvalidURL:
         console.print(
             f"""Sample data for Problem ID: [bold blue]
-{problemid}[/bold blue] not found.")
+            {problemid}[/bold blue] not found.")
             """)
     console.print(
         f"Downloading metadata: [bold blue]{problemid}[/bold blue]")
