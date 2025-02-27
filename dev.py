@@ -7,7 +7,7 @@ build.sh script copies the contents of this file to main.py.
 Change the __version__ to match in pyproject.toml
 Has to be higher than the pypi version.
 """
-__version__ = '1.0.4'
+__version__ = '1.0.5'
 
 from math import inf
 from typing import Tuple

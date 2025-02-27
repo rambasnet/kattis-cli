@@ -2,6 +2,7 @@
 """
 
 from typing import Any, List, Dict
+from math import inf
 import glob
 import time
 import os
@@ -26,7 +27,7 @@ def test_samples(
         problem_root_folder: str,
         files: List[str],
         lang_config: Dict[Any, Any],
-        accuracy: float = 0
+        accuracy: float = inf
 ) -> None:
     """Tests a problem by running all the .in files in
     the problem folder and comparing the output to the .ans files.
@@ -118,28 +119,31 @@ def test_samples(
                 input_content = f.read()
                 input_content.replace(b'\r\n', b'\n')  # Windows fix
             out_file = in_file.replace('.in', '.ans')
-            with open(out_file, 'rb') as f:
-                expected = f.read()
-                expected.replace(b'\r\n', b'\n')
+            try:
+                with open(out_file, 'rb') as f:
+                    expected = f.read()
+                    expected.replace(b'\r\n', b'\n')
+            except FileNotFoundError:
+                try:
+                    out_file = in_file.replace('.in', '.out')
+                    with open(out_file, 'rb') as f:
+                        expected = f.read()
+                        expected.replace(b'\r\n', b'\n')
+                except FileNotFoundError:
+                    expected = b"No .ans or .out file found!"
             # Run the program
             code, ans, error = run_program.run(lang_config, mainclass, in_file)
-            expected = expected.strip()
             if code != 0:
                 ans = error
             # console.print(f"{ans=} {error=}")
-            if accuracy == 0:  # string comparison
-                if expected == ans.encode('utf-8').strip():
-                    result = "[bold green]✅[/bold green]"
-                    count += 1
-                else:
-                    result = "[bold red]❌[/bold red]"
-            else:  # floating point comparison
-                if utility.compare_floats(expected.decode('utf-8'),
-                                          ans, accuracy):
-                    result = "[bold green]✅[/bold green]"
-                    count += 1
-                else:
-                    result = "[bold red]❌[/bold red]"
+
+            # floating point comparison
+            if utility.check_answer(expected.decode('utf-8'),
+                                    ans, accuracy):
+                result = "[bold green]✅[/bold green]"
+                count += 1
+            else:
+                result = "[bold red]❌[/bold red]"
 
             # UI Table Row ---
             in_filename = Path(in_file).parts[-1]

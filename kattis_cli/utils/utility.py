@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import os
+from math import inf
 from typing import Union
 import yaml
 
@@ -60,21 +61,28 @@ def find_problem_root_folder(
     raise FileNotFoundError("Error: Problem root folder not found.")
 
 
-def compare_floats(expected: str, ans: str, places: float) -> bool:
-    """Compare two floating point numbers with given accuracy.
+def check_answer(expected: str, ans: str, places: float = inf) -> bool:
+    """Compare two numeric strings with given precision.
 
     Args:
         expected (str): expected result
         ans (str): actual result
-        places (float): decimal places for approximation
+        places (float): decimal places for approximation;
+        default inf for string comparison
 
     Returns:
-        bool: True if the two numbers are equal within the given accuracy
+        bool: True if the two values are equal, False otherwise
     """
     expect_ans = expected.strip().split('\n')
     actual_ans = ans.strip().split('\n')
     if len(expect_ans) != len(actual_ans):
         return False
+
+    if places == inf:
+        if expect_ans == actual_ans:
+            return True
+        else:
+            return False
     try:
         for i, ex_ans in enumerate(expect_ans):
             flt_expected = float(ex_ans)
