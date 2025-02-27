@@ -2,14 +2,12 @@
     and save them to data folders.
 """
 
-# import sys
 import shutil
 from typing import Any, Dict
 from pathlib import Path
 import requests
 import yaml
 from bs4 import BeautifulSoup
-
 from .utils import config, utility
 from . import settings
 

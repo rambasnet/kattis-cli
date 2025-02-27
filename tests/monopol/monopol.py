@@ -6,10 +6,11 @@ from typing import DefaultDict
 
 
 def find_prob() -> DefaultDict:
-    """_summary_
+    """Find the probability of getting a sum of two dice.
 
     Returns:
-        DefaultDict: _description_
+        DefaultDict: A dictionary with the sum of two dice as key and the
+        number of ways to get that sum
     """
     ways: DefaultDict = defaultdict(int)
     for i in range(1, 7):

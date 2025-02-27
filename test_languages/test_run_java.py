@@ -4,7 +4,7 @@
 from pathlib import Path
 import shutil
 import os
-from kattis_cli.utils import run_program, config, utility
+from kattis_cli.utils import languages, run_program, config
 
 
 def test_run_java_success() -> None:
@@ -19,7 +19,7 @@ def test_run_java_success() -> None:
     lang_config = config.parse_config('java')
     code, ans, _ = run_program.compile_program(lang_config, [main_program])
     assert code == 0
-    main_class = utility.guess_mainfile(
+    main_class = languages.guess_mainfile(
         'java', [main_program], 'cold', lang_config)
     # main_class = "Cold"
     # print(f'{main_class=}')

@@ -1,46 +1,22 @@
 """Test the Unitlity module.
 """
 
-
-import shutil
-from pathlib import Path
-from kattis_cli.utils import utility, config
+from kattis_cli.utils.utility import compare_floats
 
 
-def test_guess_mainfile() -> None:
-    """Test utility.guess_mainfile function."""
-    if not Path.home().joinpath('.kattis-cli.toml').exists():
-        shutil.copyfile(
-            './kattis_cli/.kattis-cli.toml',
-            Path.home().joinpath('.kattis-cli.toml'))
-    lang_config = config.parse_config('python3')
-    main_file = utility.guess_mainfile('python3', [], 'cold', lang_config)
-    assert main_file == 'cold.py'
-    main_file = utility.guess_mainfile(
-        'python3', ['cold.py'], 'cold', lang_config)
-    assert main_file == 'cold.py'
-    main_file = utility.guess_mainfile(
-        'python3', ['cold.py', 'cold2.py', 'main.py'], 'cold', lang_config)
-    assert main_file == 'cold.py'
-    main_file = utility.guess_mainfile(
-        'python3',
-        ['cold2.py',
-         'cold.py', 'test_cold.py'], 'cold', lang_config)
-    assert main_file == 'cold.py'
-
-
-def test_valididate_language_true() -> None:
+def test_compare_floats_single() -> None:
+    """Test compare_floats function.
     """
-    Test utility.validate_language
-    """
-    assert utility.validate_language('python3') is True
+    expected = '1.\n'
+    ans = '1.001\n'
+    places = 2
+    assert compare_floats(expected, ans, places) is True
 
 
-def test_valididate_language_false() -> None:
+def test_compare_floats_multiple() -> None:
+    """Test compare_floats function.
     """
-    Test utility.validate_language
-    """
-    try:
-        utility.validate_language('d++')
-    except SystemExit:
-        assert True
+    expected = '1.5555\n2.1111\n'
+    ans = '1.5556\n2.1115\n'
+    places = 3
+    assert compare_floats(expected, ans, places) is True

@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 import shutil
 import requests
-from kattis_cli.utils import utility
+from kattis_cli.utils import languages
 from kattis_cli import download
 
 
@@ -19,7 +19,7 @@ class TestDownload(unittest.TestCase):
         """
         self.assertRaises(
             FileNotFoundError,
-            utility.find_problem_root_folder,
+            languages.find_problem_root_folder,
             Path.cwd(),
             "*.yaml")
 
@@ -30,7 +30,7 @@ class TestDownload(unittest.TestCase):
         path = Path.cwd().joinpath(folder)
         path.mkdir(exist_ok=True)
         path.joinpath('hello.yaml').touch()
-        root_folder = utility.find_problem_root_folder(path, "*.yaml")
+        root_folder = languages.find_problem_root_folder(path, "*.yaml")
         self.assertEqual(root_folder, path)
         shutil.rmtree(path)
 

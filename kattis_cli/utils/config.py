@@ -9,7 +9,7 @@ import configparser
 from tomlkit import load
 import yaml
 
-from .utility import find_problem_root_folder
+from kattis_cli.utils.utility import find_problem_root_folder
 
 _DEFAULT_CONFIG = Path.home().joinpath('.kattisrc')
 

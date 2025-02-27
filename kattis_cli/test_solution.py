@@ -1,7 +1,6 @@
 """Tester module for Kattis.
 """
 
-from math import inf
 from typing import Any, List, Dict
 import glob
 import time
@@ -17,26 +16,7 @@ from rich.prompt import Confirm
 from rich.markup import escape
 
 from kattis_cli import kattis
-from kattis_cli.utils import run_program, utility
-
-
-def compare_floats(expected: str, ans: str, places: float) -> bool:
-    """Compare two floating point numbers with given accuracy.
-
-    Args:
-        expected (str): expected result
-        ans (str): actual result
-        places (float): decimal places for approximation
-
-    Returns:
-        bool: True if the two numbers are equal within the given accuracy
-    """
-    try:
-        flt_expected = float(expected)
-        flt_ans = float(ans)
-        return abs(flt_expected - flt_ans) <= 10**(-places)
-    except ValueError:
-        return False
+from kattis_cli.utils import languages, run_program, utility
 
 
 def test_samples(
@@ -46,7 +26,7 @@ def test_samples(
         problem_root_folder: str,
         files: List[str],
         lang_config: Dict[Any, Any],
-        accuracy: float = inf
+        accuracy: float = 0
 ) -> None:
     """Tests a problem by running all the .in files in
     the problem folder and comparing the output to the .ans files.
@@ -147,14 +127,15 @@ def test_samples(
             if code != 0:
                 ans = error
             # console.print(f"{ans=} {error=}")
-            if accuracy == inf:  # string comparison
+            if accuracy == 0:  # string comparison
                 if expected == ans.encode('utf-8').strip():
                     result = "[bold green]✅[/bold green]"
                     count += 1
                 else:
                     result = "[bold red]❌[/bold red]"
             else:  # floating point comparison
-                if compare_floats(expected.decode('utf-8'), ans, accuracy):
+                if utility.compare_floats(expected.decode('utf-8'),
+                                          ans, accuracy):
                     result = "[bold green]✅[/bold green]"
                     count += 1
                 else:
@@ -188,7 +169,7 @@ def test_samples(
             "Awesome... Time to submit it to :cat: Kattis! :cat:",
             style="bold green")
         if Confirm.ask("Submit to Kattis?", default=True):
-            kat_language = utility.LOCAL_TO_KATTIS.get(loc_language, '')
+            kat_language = languages.LOCAL_TO_KATTIS.get(loc_language, '')
             kattis.submit_solution(files, problemid,
                                    kat_language, mainclass,
                                    tag="", force=True)

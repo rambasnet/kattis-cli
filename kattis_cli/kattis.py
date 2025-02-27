@@ -20,7 +20,7 @@ from rich.align import Align
 from rich.live import Live
 from rich.prompt import Confirm
 
-from kattis_cli.utils import utility
+from kattis_cli.utils import languages
 from kattis_cli.utils import config
 from kattis_cli import ui
 
@@ -182,7 +182,7 @@ def confirm_or_die(problem: str, language: str,
     console.print('Language:', language)
     console.print('Files:', ', '.join(files))
     if mainclass:
-        if language in utility.GUESS_MAINFILE:
+        if language in languages.GUESS_MAINFILE:
             console.print('Main file:', mainclass)
         else:
             console.print('Mainclass:', mainclass)

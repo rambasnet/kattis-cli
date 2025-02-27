@@ -7,7 +7,7 @@ build.sh script copies the contents of this file to main.py.
 Change the __version__ to match in pyproject.toml
 Has to be higher than the pypi version.
 """
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
 from math import inf
 from typing import Tuple
@@ -18,7 +18,7 @@ import kattis_cli.download as download
 import kattis_cli.ui as ui
 import kattis_cli.test_solution as test_solution
 import kattis_cli.kattis as kattis
-import kattis_cli.utils.utility as utility
+import kattis_cli.utils.languages as languages
 import kattis_cli.kattis_setup as kattis_setup
 
 
@@ -75,11 +75,11 @@ def test(
     """Test solution with sample files.
     """
     problemid, loc_language, mainclass, _files, root_folder, lang_config = \
-        utility.update_args(problemid, language, mainclass, list(files))
+        languages.update_args(problemid, language, mainclass, list(files))
     # print('After - ', f'{problemid=} {language=} {mainclass=} {_files=}')
     # lang_config = config.parse_config(language)
     if not mainclass:
-        mainclass = utility.guess_mainfile(
+        mainclass = languages.guess_mainfile(
             language, _files, problemid, lang_config)
 
     test_solution.test_samples(
@@ -111,14 +111,14 @@ def submit(problemid: str, language: str,
     """Submit a solution to Kattis.
     """
     problemid, language, mainclass, _files, _, lang_config = \
-        utility.update_args(
+        languages.update_args(
             problemid, language, mainclass, list(files))
     # Finally, submit the solution
     # print(f'{problemid=} {language=} {mainclass=} {tag=} {force=} {_files=}')
     if not mainclass:
-        mainclass = utility.guess_mainfile(
+        mainclass = languages.guess_mainfile(
             language, _files, problemid, lang_config)
-    kat_lang = utility.LOCAL_TO_KATTIS[language]
+    kat_lang = languages.LOCAL_TO_KATTIS[language]
     kattis.submit_solution(_files, problemid,
                            kat_lang, mainclass,
                            tag, force)
