@@ -5,7 +5,7 @@ CHECK_STYLE = flake8
 FIX_STYLE = autopep8 --in-place --recursive --aggressive --aggressive
 
 .PHONY: all
-all: check-style fix-style check-type run-test clean
+all: check-style fix-style check-type run-test
 
 .PHONY: check-type
 check-type:

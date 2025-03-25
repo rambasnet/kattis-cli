@@ -161,3 +161,7 @@ cython_debug/
 
 a.out.dSYM/
 .DS_Store
+.mypy_cache/
+.pytest_cache/
+__pycache__/
+.cache/
