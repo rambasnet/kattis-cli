@@ -7,13 +7,14 @@ build.sh script copies the contents of this file to main.py.
 Change the __version__ to match in pyproject.toml
 Has to be higher than the pypi version.
 """
-__version__ = '1.0.5'
+__version__ = '1.0.6'
 
 from math import inf
 from typing import Tuple
 from rich.console import Console
 import click
 import requests
+from trogon import tui
 import kattis_cli.download as download
 import kattis_cli.ui as ui
 import kattis_cli.test_solution as test_solution
@@ -22,6 +23,7 @@ import kattis_cli.utils.languages as languages
 import kattis_cli.kattis_setup as kattis_setup
 
 
+@tui()
 @click.group()
 @click.version_option(version=__version__, prog_name='kattis-cli')
 def main() -> None:

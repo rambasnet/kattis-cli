@@ -82,6 +82,7 @@ kattis setup
 ```bash
 kattis <command> [options]
 kattis --help
+kattis tui # get into text user interface mode
 ```
 
 ### Commands
