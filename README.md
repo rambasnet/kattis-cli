@@ -10,7 +10,7 @@ Inspired by the official Kattis CLI: [https://github.com/Kattis/kattis-cli](http
 
 ## Quick Tour of Kattis-CLI
 
-<video src='./videos/Kattis-TUI-get.mov' width=600 controls></video>
+![Kattis-CLI](./images/Kattis-TUI-get.gif)
 
 ## Requirements
 
