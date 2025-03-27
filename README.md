@@ -8,6 +8,10 @@ Inspired by the official Kattis CLI: [https://github.com/Kattis/kattis-cli](http
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/kattis-cli)](https://pypi.org/project/kattis-cli/)
 [![PyPI - License](https://img.shields.io/pypi/l/kattis-cli)](https://pypi.org/project/kattis-cli/)
 
+## Quick Tour of Kattis-CLI
+
+<video src='./videos/Kattis-TUI-get.mov' width=600 controls></video>
+
 ## Requirements
 
 - Python 3.8+ (PyPy preferred as Kattis uses PyPy to run your Python3 solutions)
@@ -76,6 +80,7 @@ python -m pip install kattis-cli --upgrade
 ```bash
 kattis setup
 ```
+
 
 ## Usage
 
