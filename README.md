@@ -1,6 +1,6 @@
 # Kattis-CLI
 
-Kattis CLI - download, test and submit Kattis problems using CLI.
+Kattis CLI - download, test and submit Kattis problems using CLI or TUI.
 Inspired by the official Kattis CLI: [https://github.com/Kattis/kattis-cli](https://github.com/Kattis/kattis-cli)
 
 ![Tests](https://github.com/rambasnet/kattis-cli/actions/workflows/ci-test.yml/badge.svg)
