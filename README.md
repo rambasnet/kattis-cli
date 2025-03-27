@@ -165,6 +165,13 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 - create virtual environment with pypy 3.8 or higher
 - using conda the following command creates kattis virtual environment with pypy3.8
 
+```bash
+git clone git@github.com:rambasnet/kattis-cli.git
+cd kattis-cli
+pip install poetry
+poetry install
+```
+
 ### Using conda and virtual environment
 
 ```bash
