@@ -17,7 +17,7 @@ import requests
 from trogon import tui
 import kattis_cli.download as download
 import kattis_cli.ui as ui
-import kattis_cli.test_solution as test_solution
+import kattis_cli.solution_tester as solution_tester
 import kattis_cli.kattis as kattis
 import kattis_cli.utils.languages as languages
 import kattis_cli.kattis_setup as kattis_setup
@@ -84,7 +84,7 @@ def test(
         mainclass = languages.guess_mainfile(
             language, _files, problemid, lang_config)
 
-    test_solution.test_samples(
+    solution_tester.test_samples(
         problemid,
         loc_language,
         mainclass,

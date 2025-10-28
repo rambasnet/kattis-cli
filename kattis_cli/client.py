@@ -59,7 +59,17 @@ class KattisClient:
     # --- Authentication ---
     def login(self, login_url: str, username: str,
               password: str = '', token: str = '') -> requests.Response:
-        """Log in to Kattis. At least one of password or token is required."""
+        """Log in to Kattis using username and either a password or token.
+
+        Args:
+            login_url: Full URL to the Kattis login endpoint.
+            username: Kattis username or email.
+            password: Optional password for login.
+            token: Optional API token for script-based login.
+
+        Returns:
+            The requests.Response object from the POST request.
+        """
         login_args = {'user': username, 'script': 'true'}
         if password:
             login_args['password'] = password
@@ -72,7 +82,16 @@ class KattisClient:
             headers=self._HEADERS,
             timeout=10)
 
-    def login_from_config(self, cfg: configparser.ConfigParser) -> requests.Response:
+    def login_from_config(
+            self,
+            cfg: configparser.ConfigParser) -> requests.Response:
+        """Log in using credentials found in a .kattisrc config.
+
+        Reads username and either password or token from the provided
+        ConfigParser and performs a login. Raises ConfigError when the
+        configuration is invalid.
+        """
+
         username = cfg.get('user', 'username')
         password = token = ''
         try:
@@ -93,7 +112,20 @@ Please download a new .kattisrc file''')
         loginurl = self.get_url(cfg, 'loginurl', 'login')
         return self.login(loginurl, username, password, token)
 
-    def get_url(self, cfg: configparser.ConfigParser, option: str, default: str) -> str:
+    def get_url(
+            self,
+            cfg: configparser.ConfigParser,
+            option: str,
+            default: str) -> str:
+        """Return a URL taken from config or constructed from hostname.
+
+        Args:
+            cfg: ConfigParser loaded from .kattisrc.
+            option: Config option name that might hold the URL.
+            default: Default path to append to the hostname if option
+                is not present.
+        """
+
         if cfg.has_option('kattis', option):
             return cfg.get('kattis', option)
         else:
@@ -108,6 +140,21 @@ Please download a new .kattisrc file''')
                files: List[str],
                mainclass: str,
                tag: str) -> requests.Response:
+        """Submit a solution to the Kattis submit endpoint.
+
+        Args:
+            submit_url: Full URL to POST the submission to.
+            cookies: Requests cookie jar from an authenticated session.
+            problem: Problem id to submit to.
+            language: Language identifier to use for the submission.
+            files: List of file paths to include in the submission.
+            mainclass: Main class/file name (if applicable).
+            tag: Optional tag to attach to the submission.
+
+        Returns:
+            The requests.Response returned by the POST.
+        """
+
         data = {'submit': 'true',
                 'submit_ctr': 2,
                 'language': language,
@@ -133,6 +180,13 @@ Please download a new .kattisrc file''')
 
     def get_submission_url(self, submit_response: str,
                            cfg: configparser.ConfigParser) -> str:
+        """Extract the submission URL from the server submission reply.
+
+        The Kattis submit reply typically contains a line indicating the
+        Submission ID. This builds the full submissions URL from config
+        and returns the specific submission URL.
+        """
+
         m = re.search(r'Submission ID: (\d+)', submit_response)
         if m:
             submissions_url = self.get_url(
@@ -143,9 +197,20 @@ Please download a new .kattisrc file''')
             raise config.ConfigError(
                 'Could not find submission ID in response')
 
-    def get_submission_status(self,
-                              submission_url: str,
-                              cookies: requests.cookies.RequestsCookieJar) -> Any:
+    def get_submission_status(
+            self,
+            submission_url: str,
+            cookies: requests.cookies.RequestsCookieJar) -> Any:
+        """Poll the submission status JSON endpoint and return parsed JSON.
+
+        Args:
+            submission_url: Base URL for the submission (without ?json).
+            cookies: Authenticated session cookies.
+
+        Returns:
+            Parsed JSON as returned by the status endpoint.
+        """
+
         reply = requests.get(
             submission_url + '?json',
             cookies=cookies,
@@ -154,6 +219,12 @@ Please download a new .kattisrc file''')
 
     # --- HTML parsing ---
     def parse_row_html(self, html: str) -> Any:
+        """Parse the HTML snippet for a single submission row.
+
+        The method extracts runtime, status, language and per-test results
+        from the HTML snippet returned by the Kattis submission API.
+        """
+
         runtime = '❓ s'
         status = '❓'
         language = '❓'
@@ -161,29 +232,29 @@ Please download a new .kattisrc file''')
         soup = BeautifulSoup(html, 'html.parser')
         tr_submission: Any = soup.find("tr", {"data-submission-id": True})
         if tr_submission:
-            td_cputime = tr_submission.findChild("td", {"data-type": "cpu"})
+            td_cputime = tr_submission.find("td", {"data-type": "cpu"})
             if td_cputime:
                 runtime = td_cputime.text.strip().replace('&nbsp;', ' ')
             if not runtime:
                 runtime = '❓ s'
-            div_status = tr_submission.findChild(
+            div_status = tr_submission.find(
                 "div", {"class": "status"}, recursive=True)
             if div_status:
                 status = div_status.text.strip()
             else:
                 status = '❓'
-            td_lang = tr_submission.findChild(
+            td_lang = tr_submission.find(
                 "td", {"data-type": "lang"}, recursive=False)
             if td_lang:
                 language = td_lang.text.strip()
             else:
                 language = '❓'
-            td_test_cases = tr_submission.findChild(
+            td_test_cases = tr_submission.find(
                 "td", {"data-type": "testcases"})
             if td_test_cases:
                 test_status = td_test_cases.text.strip()
 
-        i_tag = soup.findAll("i", {"class": True})
+        i_tag = soup.find_all("i", {"class": True})
         test_result = []
         for num, i in enumerate(i_tag):
             if 'title' not in i.attrs:
@@ -200,6 +271,12 @@ Please download a new .kattisrc file''')
     # --- High level flows ---
     def show_kattis_judgement(self, problemid: str, submission_url: str,
                               cfg: configparser.ConfigParser) -> None:
+        """Display a live view of the Kattis judgement for a submission.
+
+        This will poll the Kattis status endpoint and render a live
+        textual UI until the submission reaches a final state.
+        """
+
         config_data = ui.show_problem_metadata(problemid)
         config_data['submissions'] += 1
         console = Console()
@@ -231,12 +308,16 @@ Please download a new .kattisrc file''')
                 text += f'\t[bold blue]RUNTIME:[/] {runtime}'
                 text += f'\t[bold deep_pink3][link={submission_url}]'
                 text += 'VIEW DETAILS ON KATTIS[/link][/]\n\n'
-                text += f'[bold blue]TESTCASES:[/] [bold green]{t_status}[/]\n\n'
+                text += (f'[bold blue]TESTCASES:[/] '
+                         f'[bold green]{t_status}[/]\n\n')
                 if status_id < 5:
-                    test_cases = '🤞🏻🤞🏻🤞🏻🤞🏻🤞🏻 [bold yellow]WAITING...[/] 🤞🏻🤞🏻🤞🏻🤞🏻🤞🏻‍'
+                    test_cases = (
+                        '🤞🏻🤞🏻🤞🏻🤞🏻🤞🏻 '
+                        '[bold yellow]WAITING...[/] '
+                        '🤞🏻🤞🏻🤞🏻🤞🏻🤞🏻\u200d'
+                    )
                 else:
-                    test_cases = ' '.join(t_results)
-                    test_cases += '\n'
+                    test_cases = ' '.join(t_results) + '\n'
                 text += test_cases
                 kattis_live.update(Align.center(text))
                 if status_id > 5:
@@ -252,7 +333,15 @@ Please download a new .kattisrc file''')
         config.update_problem_metadata(problemid, config_data)
         ui.show_problem_metadata(problemid)
 
-    def get_login_reply(self, cfg: configparser.ConfigParser) -> requests.Response:
+    def get_login_reply(
+            self,
+            cfg: configparser.ConfigParser) -> requests.Response:
+        """Attempt login using config and handle common error modes.
+
+        Returns the successful login Response or exits the process when
+        login cannot be completed.
+        """
+
         try:
             login_reply = self.login_from_config(cfg)
         except config.ConfigError as exc:
@@ -277,6 +366,13 @@ Please download a new .kattisrc file''')
     def submit_solution(self, files: List[str], problemid: str,
                         language: str, mainclass: str,
                         tag: str, force: bool) -> None:
+        """High-level helper to submit a solution from file paths.
+
+        This wraps login-from-config, optional confirmation UI and the
+        lower-level submit call. On success it may follow-up by showing
+        the live judgement UI.
+        """
+
         try:
             cfg = config.get_kattisrc()
         except config.ConfigError as exc:
@@ -334,6 +430,12 @@ Please download a new .kattisrc file''')
     def _confirm_or_die(self, problem: str, language: str,
                         files: List[str], mainclass: str,
                         tag: str) -> None:
+        """Ask the user to confirm the submission or exit the program.
+
+        This uses the rich Confirm prompt to request user confirmation
+        before submitting to Kattis.
+        """
+
         console = Console()
         console.clear()
         console.print('Problem:', problem)

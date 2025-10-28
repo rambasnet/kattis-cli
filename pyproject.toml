@@ -16,7 +16,7 @@ classifiers = [
 "Bug Tracker" = "https://github.com/rambasnet/kattis-cli/issues"
 
 [tool.poetry.dependencies]
-python = "^3.9.1"
+python = "^3.10.0"
 requests = "^2.31.0"
 click = "^8.1.7"
 beautifulsoup4 = "^4.12.2"
