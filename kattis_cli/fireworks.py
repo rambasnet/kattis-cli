@@ -11,8 +11,6 @@ import sys
 import locale
 import time
 from random import randint, choice
-import subprocess
-from pathlib import Path
 
 
 def run_fireworks() -> None:
@@ -60,12 +58,6 @@ def run_fireworks() -> None:
         # Simple ASCII fallback symbols
         symbols = ['*', '+', 'o', '.']
         # Replace message with ASCII-only fallback if necessary
-        if message:
-            try:
-                message.encode('ascii')
-            except (UnicodeEncodeError, TypeError):
-                message = (message.encode('ascii', 'replace')
-                           .decode('ascii'))
         # Inform interactive users why we fell back (but avoid noisy logs
         # in captured/non-interactive runs).
         if sys.stdout.isatty():

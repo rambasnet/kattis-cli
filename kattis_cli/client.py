@@ -5,8 +5,8 @@ Object-oriented Kattis API client.
 This class wraps login, submit and status-checking functionality previously
 implemented as module-level functions in `kattis.py`.
 """
-from pdb import run
-from typing import List, Any, final
+
+from typing import List, Any
 import sys
 import os
 import re
@@ -20,8 +20,6 @@ from rich.console import Console
 from rich.align import Align
 from rich.live import Live
 from rich.prompt import Confirm
-import subprocess
-from pathlib import Path
 
 from kattis_cli.utils import languages
 from kattis_cli.utils import config
