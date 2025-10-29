@@ -21,7 +21,7 @@ Inspired by the official Kattis CLI: [https://github.com/Kattis/kattis-cli](http
 
 - Use Command Line or PowerShell
 - Make sure python is in your PATH
-    - Install Python from Windows Store
+  - Install Python from Windows Store
 - if you get codec error while running kattis-cli, run the following command in Command Prompt:
 
 ```bash
@@ -33,17 +33,15 @@ chcp 65001
 
 If you've Python version 3.8 or higher, you can skip creating virtual environment. If you wish to create a virtual environment, see intructions below.
 
-
 ### Create and activate virtual environment using venv
 
 - follow the instruction provided in the link to create and activate virtual environment:
-[https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/)
-
+  [https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/)
 
 ### Create and activate virtual environment using conda
 
 - follow the instruction provided in the link to create and activate virtual environment:
-[https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment)
+  [https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment)
 
 ## Install Kattis-cli
 
@@ -71,7 +69,6 @@ python -m pip install kattis-cli --upgrade
 
 - on Windows add the path shown in the output of the above command to your PATH environment variable
 
-
 ## Kattis configuration
 
 - run the following command and enter your Kattis credentials
@@ -80,7 +77,6 @@ python -m pip install kattis-cli --upgrade
 ```bash
 kattis setup
 ```
-
 
 ## Usage
 
@@ -121,7 +117,7 @@ kattis info
 - currently the following languages have been tested: Python 3, C++, NodeJS, C, Java
 - make sure CLI compilers are in your PATH
 - make sure python3 files have first line shebang: !/usr/bin/env python3
-    - or have extensions .py3
+  - or have extensions .py3
 - update the **.kattis-cli.toml** file in your home directory to add more languages
 - see [kattis_cli/.kattis-cli.toml](https://github.com/rambasnet/kattis-cli/blob/main/kattis_cli/.kattis-cli.toml) file for example.
 
@@ -140,7 +136,6 @@ kattis test -a 6 # Answer accepted upto 6 decimal places of accuracy
 ```bash
 kattis test -a 6
 ```
-
 
 ### Submit a problem
 
@@ -162,7 +157,6 @@ kattis submit
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. Please make sure to update tests as appropriate. Adding support for more languages is highly appreciated.
-
 
 ## Using this Repo
 
@@ -195,7 +189,7 @@ pip install -r requirements.txt
 ```bash
 make
 ./build.sh
-pip install dist/kattis_cli-x.x.x-py3-none-any.whl --force-reinstall  
+pip install dist/kattis_cli-x.x.x-py3-none-any.whl --force-reinstall
 ```
 
 ### Using Docker
@@ -205,5 +199,6 @@ pip install dist/kattis_cli-x.x.x-py3-none-any.whl --force-reinstall
 - if using Windows, run the following command in git-bash Terminal
 
 ```bash
-bash run.sh
+docker-compose up -d
+docker exec -it kattis-cli zsh
 ```

@@ -5,7 +5,8 @@ Object-oriented Kattis API client.
 This class wraps login, submit and status-checking functionality previously
 implemented as module-level functions in `kattis.py`.
 """
-from typing import List, Any
+from pdb import run
+from typing import List, Any, final
 import sys
 import os
 import re
@@ -19,10 +20,13 @@ from rich.console import Console
 from rich.align import Align
 from rich.live import Live
 from rich.prompt import Confirm
+import subprocess
+from pathlib import Path
 
 from kattis_cli.utils import languages
 from kattis_cli.utils import config
 from kattis_cli import ui
+from kattis_cli.fireworks import run_fireworks
 
 
 class KattisClient:
@@ -327,6 +331,15 @@ Please download a new .kattisrc file''')
             verdict = '👍🎆🔥🎈🎈 [bold yellow]YAY!! KEEP GOING...[/] 🎈🎈👍🎆🔥'
             console.print()
             config_data['accepted'] += 1
+            # Try to launch an external fireworks script in a separate
+            # process. This keeps GUI code out of the main client process
+            # and avoids import-time side effects.
+            try:
+                run_fireworks()
+            except Exception:
+                # Best-effort: failures to launch fireworks should not
+                # affect normal client operation.
+                pass
         else:
             verdict = '💪🧐💪 [bold green]SORRY![/] 🧐💪🧐'
         console.print(Align.center(verdict))
