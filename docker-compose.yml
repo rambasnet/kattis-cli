@@ -23,6 +23,8 @@ services:
         "sh",
         "-c",
         "sudo chown user --recursive /home/user; zsh && tail -f /dev/null",
+        "&&",
+        "git config core.hooksPath .githooks && zsh",
       ]
 
 networks:
