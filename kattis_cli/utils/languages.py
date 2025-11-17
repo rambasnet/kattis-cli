@@ -129,6 +129,8 @@ def guess_language(ext: str, files: List[str]) -> str:
             return "c"
         else:
             return "cpp"
+    if ext == '.hpp':
+        return "cpp"
     if ext == ".py":
         return "python3"
     return LANGUAGE_GUESS.get(ext, '')
@@ -320,10 +322,10 @@ def get_coding_files() -> List[str]:
     Returns:
         List[str]: List of coding files.
     """
-    cur_folder = str(Path.cwd())
+    cur_folder = Path.cwd()
     console = Console()
     files = [
-        f for f in os.listdir(cur_folder) if valid_extension(f)]
+        str(f) for f in cur_folder.rglob('*') if f.is_file() and valid_extension(str(f))]
     if not files:
         console.print(
             'No source file(s) found in the current folder!',
