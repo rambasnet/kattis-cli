@@ -13,6 +13,8 @@ from kattis_cli.utils.utility import find_problem_root_folder
 
 LANGUAGE_GUESS = {
     '.c': 'c',
+    '.h': 'c',
+    '.hpp': 'cpp',
     '.c++': 'cpp',
     '.cc': 'cpp',
     '.c#': 'csharp',
@@ -316,19 +318,21 @@ filename extension "{ext}"''')
     return problemid, loc_language, mainclass, files, root_folder, lang_config
 
 
-def get_coding_files() -> List[str]:
+def get_coding_files(base_path: Path = Path.cwd()) -> List[str]:
     """Get coding files from current directory.
 
     Returns:
         List[str]: List of coding files.
     """
-    cur_folder = Path.cwd()
+
+    if Path(base_path / "src").is_dir():
+        base_path = base_path / "src"
     console = Console()
-    files = [
-        str(f) for f in cur_folder.rglob('*') if f.is_file() and valid_extension(str(f))]
+    files = [str(f) for f in base_path.rglob(
+        '*') if f.is_file() and valid_extension(str(f))]
     if not files:
         console.print(
-            'No source file(s) found in the current folder!',
+            f'No source file(s) found in {base_path}!',
             style='bold red')
         exit(1)
     return files

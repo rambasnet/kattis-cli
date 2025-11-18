@@ -1,9 +1,9 @@
-accepted: 7
+accepted: 8
 cpu_limit: 1 second
 difficulty: '1.4'
 mem_limit: 1024 MB
 problemid: cold
 source: University of Chicago Masters Program in Computer Science - Placement Exam
   2014/15
-submissions: 9
+submissions: 11
 title: Cold-puter Science

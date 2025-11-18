@@ -42,3 +42,26 @@ def test_valididate_language_false() -> None:
         languages.validate_language('d++')
     except SystemExit:
         assert True
+
+
+def test_get_coding_files() -> None:
+    """Test utility.get_coding_files function."""
+    cur_path = Path.cwd() / Path('tests/cold/C++/src')
+    print("Path=", str(cur_path))
+    files = languages.get_coding_files(cur_path)
+
+    assert len(files) == 3
+    assert any(f.endswith('cold.cpp') for f in files)
+    assert any(f.endswith('util.cpp') for f in files)
+    assert any(f.endswith('util.h') for f in files)
+
+
+def test_get_coding_files1() -> None:
+    """Test utility.get_coding_files function."""
+    cur_path = Path.cwd() / Path('tests/cold/C++')
+    print("Path=", str(cur_path))
+    files = languages.get_coding_files(cur_path)
+    assert len(files) == 3
+    assert any(f.endswith('cold.cpp') for f in files)
+    assert any(f.endswith('util.cpp') for f in files)
+    assert any(f.endswith('util.h') for f in files)

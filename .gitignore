@@ -159,6 +159,10 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+*.bin
+*.class
+*.exe
+*.out
 a.out.dSYM/
 .DS_Store
 .mypy_cache/

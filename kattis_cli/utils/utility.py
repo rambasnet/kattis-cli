@@ -34,6 +34,8 @@ def find_problem_root_folder(
         Returns:
             bool: True if path exists, False otherwise
         """
+        if filename.startswith('/'):
+            filename = Path(filename).name
         for file in path.glob(filename):
             name, ext = os.path.splitext(file.name)
             folder_name = path.parts[-1]
