@@ -67,13 +67,13 @@ class TestDownload(unittest.TestCase):
             requests.exceptions.InvalidURL,
             download.download_sample_data,
             problemid)
-        shutil.rmtree(Path.cwd().joinpath(problemid))
+        assert Path.cwd().joinpath(problemid).exists() is False
         problemid = '123blahblah'
         self.assertRaises(
             requests.exceptions.InvalidURL,
             download.download_sample_data,
             problemid)
-        shutil.rmtree(Path.cwd().joinpath(problemid))
+        assert Path.cwd().joinpath(problemid).exists() is False
 
     def test_download_sample_data(self) -> None:
         """Test download_sample_data.
