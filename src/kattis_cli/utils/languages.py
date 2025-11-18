@@ -271,7 +271,7 @@ def update_args(problemid: str,
 
     console = Console()
     if not files:
-        files = get_coding_files()
+        files = get_coding_files(Path.cwd())
     # check if problemid is given
     # if not problemid:
     cur_folder = Path.cwd()
@@ -318,13 +318,14 @@ filename extension "{ext}"''')
     return problemid, loc_language, mainclass, files, root_folder, lang_config
 
 
-def get_coding_files(base_path: Path = Path.cwd()) -> List[str]:
+def get_coding_files(base_path: Path) -> List[str]:
     """Get coding files from current directory.
 
     Returns:
         List[str]: List of coding files.
     """
-
+    if not base_path:
+        base_path = Path.cwd()
     if Path(base_path / "src").is_dir():
         base_path = base_path / "src"
     console = Console()

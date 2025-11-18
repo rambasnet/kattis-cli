@@ -6,7 +6,7 @@
 from unittest.mock import patch
 import requests
 from click.testing import CliRunner
-import dev as main
+import kattis_cli.main as main
 
 
 def test_get_success() -> None:

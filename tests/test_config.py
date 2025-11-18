@@ -37,7 +37,7 @@ class TestConfig(unittest.TestCase):
         """Test parse_config function.
         """
         dest_file = Path.home().joinpath(".kattis-cli.toml")
-        src_file = Path.cwd().joinpath('kattis_cli').\
+        src_file = Path.cwd().joinpath('src/kattis_cli').\
             joinpath(".kattis-cli.toml")
         shutil.copy(src_file, dest_file)
         data = config.parse_config()

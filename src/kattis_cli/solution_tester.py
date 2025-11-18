@@ -91,6 +91,10 @@ class SolutionTester:
         total = len(in_files)
         console.clear()
         title = f"[not italic bold blue]👷‍ Testing {mainclass} "
+        main_src_file = next((f for f in files if f.endswith(mainclass)), None)
+        if not main_src_file:
+            main_src_file = mainclass
+
         title += f" using {loc_language} 👷‍[/]"
         table.title = title
         with Live(table_centered, console=console,
@@ -145,7 +149,7 @@ class SolutionTester:
                         expected = b"No .ans or .out file found!"
                 code, ans, error = run_program.run(
                     lang_config,
-                    mainclass,
+                    main_src_file,
                     in_file,
                 )
                 if code != 0:
@@ -159,7 +163,10 @@ class SolutionTester:
                     result = "[bold red]❌[/bold red]"
 
                 in_filename = Path(in_file).parts[-1]
-                out_filename = Path(out_file).parts[-1]
+                if b"No .ans or .out file found!" == expected:
+                    out_filename = "N/A"
+                else:
+                    out_filename = Path(out_file).parts[-1]
                 time.sleep(0.1)
                 table.add_row(in_filename,
                               input_content.decode('utf-8'),

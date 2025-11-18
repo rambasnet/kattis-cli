@@ -11,7 +11,7 @@ def test_run_nodejs_success() -> None:
     """
     if not Path.home().joinpath('.kattis-cli.toml').exists():
         shutil.copyfile(
-            './kattis_cli/.kattis-cli.toml',
+            './src/kattis_cli/.kattis-cli.toml',
             Path.home().joinpath('.kattis-cli.toml'))
     root_folder = Path('tests/cold')
     main_program = str(root_folder.joinpath('nodejs').joinpath('cold.js'))
@@ -32,7 +32,7 @@ def test_run_nodejs_fail() -> None:
     """
     if not Path.home().joinpath('.kattis-cli.toml').exists():
         shutil.copyfile(
-            './kattis_cli/.kattis-cli.toml',
+            './src/kattis_cli/.kattis-cli.toml',
             Path.home().joinpath('.kattis-cli.toml'))
     root_folder = Path('tests/cold')
     main_program = str(root_folder.joinpath(

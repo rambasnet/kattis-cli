@@ -9,7 +9,7 @@ def test_guess_mainfile() -> None:
     """Test utility.guess_mainfile function."""
     if not Path.home().joinpath('.kattis-cli.toml').exists():
         shutil.copyfile(
-            './kattis_cli/.kattis-cli.toml',
+            './src/kattis_cli/.kattis-cli.toml',
             Path.home().joinpath('.kattis-cli.toml'))
     lang_config = config.parse_config('python3')
     main_file = languages.guess_mainfile('python3', [], 'cold', lang_config)
@@ -47,9 +47,7 @@ def test_valididate_language_false() -> None:
 def test_get_coding_files() -> None:
     """Test utility.get_coding_files function."""
     cur_path = Path.cwd() / Path('tests/cold/C++/src')
-    print("Path=", str(cur_path))
     files = languages.get_coding_files(cur_path)
-
     assert len(files) == 3
     assert any(f.endswith('cold.cpp') for f in files)
     assert any(f.endswith('util.cpp') for f in files)

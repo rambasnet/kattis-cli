@@ -4,7 +4,7 @@
 from pathlib import Path
 import shutil
 import os
-from kattis_cli.utils import languages, run_program, config
+from katttis_cli.test import languages, run_program, config
 
 
 def test_run_java_success() -> None:
@@ -12,7 +12,7 @@ def test_run_java_success() -> None:
     """
     if not Path.home().joinpath('.kattis-cli.toml').exists():
         shutil.copyfile(
-            './kattis_cli/.kattis-cli.toml',
+            './src/kattis_cli/.kattis-cli.toml',
             Path.home().joinpath('.kattis-cli.toml'))
     root_folder = Path('tests/cold')
     main_program = str(root_folder.joinpath('java').joinpath('Cold.java'))
@@ -39,7 +39,7 @@ def test_run_java_fail() -> None:
     """
     if not Path.home().joinpath('.kattis-cli.toml').exists():
         shutil.copyfile(
-            './kattis_cli/.kattis-cli.toml',
+            './src/kattis_cli/.kattis-cli.toml',
             Path.home().joinpath('.kattis-cli.toml'))
     root_folder = Path('tests/cold')
     main_program = str(root_folder.joinpath(

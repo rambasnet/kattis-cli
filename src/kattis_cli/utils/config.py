@@ -11,7 +11,7 @@ import yaml
 
 from kattis_cli.utils.utility import find_problem_root_folder
 
-_DEFAULT_CONFIG = Path.home().joinpath('.kattisrc')
+_KATTIS_RC = Path.home().joinpath('.kattisrc')
 
 
 class ConfigError(Exception):
@@ -42,8 +42,8 @@ def get_kattisrc() -> configparser.ConfigParser:
     """Returns a ConfigParser object for the .kattisrc file(s)
     """
     cfg = configparser.ConfigParser()
-    if os.path.exists(_DEFAULT_CONFIG):
-        cfg.read(_DEFAULT_CONFIG)
+    if os.path.exists(_KATTIS_RC):
+        cfg.read(_KATTIS_RC)
 
     if not cfg.read([os.path.join(os.path.expanduser("~"), '.kattisrc'),
                      os.path.join(os.path.dirname(sys.argv[0]), '.kattisrc')]):

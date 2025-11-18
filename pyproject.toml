@@ -20,11 +20,13 @@ readme = "README.md"
 authors = [
     { name = "Ram Basnet", email = "rbasnet@coloradomesa.edu" }
 ]
-repository = "https://github.com/rambasnet/kattis-cli"
 
 [project.urls]
 "Homepage" = "https://github.com/rambasnet/kattis-cli"
 "Bug Tracker" = "https://github.com/rambasnet/kattis-cli/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.poetry.dependencies]
 python = "^3.10.0"
