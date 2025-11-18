@@ -7,7 +7,7 @@ build.sh script copies the contents of this file to main.py.
 Change the __version__ to match in pyproject.toml
 Has to be higher than the pypi version.
 """
-__version__ = '1.1.1'
+__version__ = '1.1.2'
 
 from math import inf
 from typing import Tuple
@@ -45,13 +45,12 @@ def get(problemid: str) -> None:
         download.download_sample_data(problemid)
     except requests.exceptions.InvalidURL:
         console.print(
-            f"""Sample data for Problem ID: [bold blue] \
-            {problemid}[/bold blue] not found.
+            f"""Sample data for Problem ID: [bold blue]
+            {problemid}[/bold blue] not found.")
             """)
-    else:
-        console.print(
-            f"Downloading metadata: [bold blue]{problemid}[/bold blue]")
-        download.load_problem_metadata(problemid)
+    console.print(
+        f"Downloading metadata: [bold blue]{problemid}[/bold blue]")
+    download.load_problem_metadata(problemid)
 
 
 @main.command(help='Show problem metadata.')
