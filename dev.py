@@ -1,7 +1,7 @@
 """ Main module for the kattis_cli package.
 This is the main.py file for the kattis_cli package.
 
-Change the contents here instead of main.py.
+Change the contents in dev.py instead of in main.py.
 build.sh script copies the contents of this file to main.py.
 
 Change the __version__ to match in pyproject.toml

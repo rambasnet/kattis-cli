@@ -1,4 +1,7 @@
-# Test file for main.py
+# Test file for dev.py
+# dev.py contains the main CLI code which is copied to main.py during build.sh
+# We will test the 'get' command for downloading sample data and metadata.
+
 
 from unittest.mock import patch
 import requests
