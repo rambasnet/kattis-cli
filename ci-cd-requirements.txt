@@ -10,3 +10,4 @@ beautifulsoup4
 types-beautifulsoup4
 tomlkit
 lxml
+click
