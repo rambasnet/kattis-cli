@@ -167,12 +167,11 @@ class DownloadManager:
         uri = f'{settings.KATTIS_PROBLEM_URL}{problemid}'
         uri += '/file/statement/samples.zip'
 
-        root_problem_folder = self.create_problem_folder(problemid)
-
-        data_folder = root_problem_folder.joinpath('data')
-        data_folder.mkdir(exist_ok=True)
         response = requests.get(uri, allow_redirects=True, timeout=10)
         if response.status_code == 200:
+            root_problem_folder = self.create_problem_folder(problemid)
+            data_folder = root_problem_folder.joinpath('data')
+            data_folder.mkdir(exist_ok=True)
             zip_path = data_folder.joinpath('samples.zip')
             with open(data_folder.joinpath('samples.zip'), 'wb') as f:
                 f.write(response.content)
