@@ -170,3 +170,4 @@ a.out.dSYM/
 __pycache__/
 .cache/
 poetry.lock
+*.gch
