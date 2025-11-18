@@ -48,10 +48,9 @@ def get(problemid: str) -> None:
             f"""Sample data for Problem ID: [bold blue]
             {problemid}[/bold blue] not found.")
             """)
-    else:
-        console.print(
-            f"Downloading metadata: [bold blue]{problemid}[/bold blue]")
-        download.load_problem_metadata(problemid)
+    console.print(
+        f"Downloading metadata: [bold blue]{problemid}[/bold blue]")
+    download.load_problem_metadata(problemid)
 
 
 @main.command(help='Show problem metadata.')
