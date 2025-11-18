@@ -11,3 +11,4 @@ types-beautifulsoup4
 tomlkit
 lxml
 click
+trogon
