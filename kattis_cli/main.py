@@ -45,12 +45,13 @@ def get(problemid: str) -> None:
         download.download_sample_data(problemid)
     except requests.exceptions.InvalidURL:
         console.print(
-            f"""Sample data for Problem ID: [bold blue]
-            {problemid}[/bold blue] not found.")
+            f"""Sample data for Problem ID: [bold blue] \
+            {problemid}[/bold blue] not found.
             """)
-    console.print(
-        f"Downloading metadata: [bold blue]{problemid}[/bold blue]")
-    download.load_problem_metadata(problemid)
+    else:
+        console.print(
+            f"Downloading metadata: [bold blue]{problemid}[/bold blue]")
+        download.load_problem_metadata(problemid)
 
 
 @main.command(help='Show problem metadata.')

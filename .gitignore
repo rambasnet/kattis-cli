@@ -163,7 +163,7 @@ cython_debug/
 *.class
 *.exe
 *.out
-a.out.dSYM/
+*.dSYM/
 .DS_Store
 .mypy_cache/
 .pytest_cache/

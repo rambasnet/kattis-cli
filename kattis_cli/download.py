@@ -42,7 +42,7 @@ class DownloadManager:
 
         return root_problem_folder
 
-    def download_html(self, problemid: str) -> str:
+    def download_html(self, problemid: str) -> Any:
         """Download the problem HTML page for a given problem id.
 
         Returns the HTML body as a stripped string when successful or
@@ -197,7 +197,7 @@ def create_problem_folder(problemid: str) -> Path:
     return _manager.create_problem_folder(problemid)
 
 
-def download_html(problemid: str) -> str:
+def download_html(problemid: str) -> Any:
     """Download problem HTML using the module-level manager."""
 
     return _manager.download_html(problemid)
