@@ -1,0 +1,14 @@
+import java.util.Scanner;
+
+public class {class_name} {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Your solution here
+        // if (scanner.hasNext()) {
+        //     String line = scanner.next();
+        // }
+
+        scanner.close();
+    }
+}

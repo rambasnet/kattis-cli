@@ -1,15 +1,11 @@
 """ Main module for the kattis_cli package.
-This is the main.py file for the kattis_cli package.
-
-Change the contents in dev.py instead of in main.py.
-build.sh script copies the contents of this file to main.py.
 
 Change the __version__ to match in pyproject.toml
-Has to be higher than the pypi version.
 """
 __version__ = '1.1.2'
 
 from math import inf
+import os
 from typing import Tuple
 from rich.console import Console
 import click
@@ -21,6 +17,7 @@ import kattis_cli.solution_tester as solution_tester
 import kattis_cli.kattis as kattis
 import kattis_cli.utils.languages as languages
 import kattis_cli.kattis_setup as kattis_setup
+import kattis_cli.template as template
 
 
 @tui()
@@ -43,13 +40,15 @@ def get(problemid: str) -> None:
         f"Downloading samples: [bold blue]{problemid}[/bold blue]")
     try:
         download.download_sample_data(problemid)
+        console.print(
+            f"Downloading metadata: [bold blue]{problemid}[/bold blue]")
+        download.load_problem_metadata(problemid)
     except requests.exceptions.InvalidURL:
         console.print(
             f"Problem ID: [bold red]{problemid}[/bold red] not found.")
     else:
         console.print(
-            f"Downloading metadata: [bold blue]{problemid}[/bold blue]")
-        download.load_problem_metadata(problemid)
+            f"Downloaded samples and metadata: [bold blue]{problemid}[/bold blue]")
 
 
 @main.command(help='Show problem metadata.')
@@ -115,7 +114,6 @@ def submit(problemid: str, language: str,
         languages.update_args(
             problemid, language, mainclass, list(files))
     # Finally, submit the solution
-    # print(f'{problemid=} {language=} {mainclass=} {tag=} {force=} {_files=}')
     if not mainclass:
         mainclass = languages.guess_mainfile(
             language, _files, problemid, lang_config)
@@ -130,6 +128,22 @@ def setup() -> None:
     """Setup Kattis CLI.
     """
     kattis_setup.setup()
+
+
+@main.command(help='Create a template file for a problem.')
+@click.option('-l', '--language', default='python3',
+              help='Programming language (default: python3)')
+@click.option('-p', '--problemid', default=None,
+              help='Problem ID (default: parent directory name)')
+@click.option('-s', '--src', is_flag=True, default=False,
+              help='Create src layout structure')
+def template_cmd(language: str, problemid: str, src: bool) -> None:
+    """Create a template file.
+    """
+    if not problemid:
+        problemid = os.path.basename(os.getcwd())
+
+    template.create_template(language, problemid, src)
 
 
 if __name__ == '__main__':
