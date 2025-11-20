@@ -69,8 +69,8 @@ def create_template(
                 shutil.copytree(str(src), home_templates)
             except Exception as e:
                 console.print(
-                    f"[bold red]❌ Error:[/bold red] Could not \
-copy templates: {e}")
+                    f"[bold red]❌  Could not \
+copy templates: [/bold red] {e} ")
                 return False
         return True
 
@@ -85,8 +85,8 @@ copy templates: {e}")
     console = Console()
     if not _check_kattis_templates():
         console.print(
-            f"[bold red]❌ Error:[/bold red] Templates '{language}' \
-not found in {home_templates}!")
+            f"[bold red]❌ Templates '{language}' \
+not found in [/bold red] {home_templates}! ")
         return
 
     def _copytree_with_problemid(src: str,
@@ -94,14 +94,18 @@ not found in {home_templates}!")
                                  problemid: str) -> None:
         for root, _, files in os.walk(src):
             rel = os.path.relpath(root, src)
-            rel = rel.replace('problemid', problemid)
             target_root = os.path.join(dst, rel) if rel != '.' else dst
             os.makedirs(target_root, exist_ok=True)
             for f in files:
                 src_file = os.path.join(root, f)
                 dst_file = os.path.join(
                     target_root, f.replace('problemid', problemid))
-                shutil.copy2(src_file, dst_file)
+                if os.path.exists(dst_file):
+                    console.print(
+                        f"[bold yellow]⚠️  File \
+'{dst_file}' exists. Skipping copy. [/bold yellow]")
+                else:
+                    shutil.copy2(src_file, dst_file)
 
     # If src_layout, copy the project structure for the language
     if src_layout:
@@ -111,9 +115,9 @@ not found in {home_templates}!")
             _copytree_with_problemid(
                 str(lang_src_struct), os.getcwd(), problemid)
             console.print(
-                f"[bold blue]✅ [/bold blue] Created project \
-structure for {language}.")
-        target_dir = os.path.join("src", problemid)
+                f"[bold green]✅ Created project \
+structure for {language}. [/bold green]")
+        target_dir = os.path.join("src")
     else:
         target_dir = "."
 
@@ -125,8 +129,8 @@ structure for {language}.")
             template_content = tf.read()
     except OSError:
         console.print(
-            f"[bold red] ❌ [/bold red] Could not read \
-template file: {main_template}")
+            f"[bold red] ❌ Could not read \
+template file: {main_template} [/bold red]")
         return
 
     if not main_template:
@@ -141,21 +145,21 @@ template file: {main_template}")
         filename = f"{problemid}{extension}"
         content = template_content
 
-    filepath = os.path.join(target_dir, filename)
+    dest_path = os.path.join(target_dir, filename)
 
-    if os.path.exists(filepath) and os.path.getsize(filepath) > 0:
+    if os.path.exists(dest_path) and os.path.getsize(dest_path) > 0:
         console.print(
-            f"[bold yellow]Warning:[/bold yellow] File '{filepath}' \
-exists with content. Skipping.")
+            f"[bold yellow]⚠️  File '{dest_path}' exists \
+with content. Skipping. [/bold yellow]")
         return
 
     try:
-        with open(filepath, 'w', encoding='utf-8') as f:
+        with open(dest_path, 'w', encoding='utf-8') as f:
             f.write(content)
         console.print(
-            f"[bold green]✅ [/bold green] Created template \
-'{filepath}' for {language}.")
+            f"[bold green]✅ Created template \
+'{dest_path}' for {language}.[/bold green]")
     except OSError as e:
         console.print(
-            f"[bold red]❌ [/bold red] Failed to create template \
-'{filepath}': {e}")
+            f"[bold red]❌ Failed to create template \
+'{dest_path}': {e} [/bold red]")

@@ -46,6 +46,17 @@ class TestTemplate(unittest.TestCase):
             content = f.read()
             self.assertIn('#include <iostream>', content)
 
+    def test_create_cpp_template_src(self) -> None:
+        """Test CPP src style project structure"""
+        template.create_template('cpp', 'testprob', True)
+        file_path = os.path.join('src', 'testprob.cpp')
+        self.assertTrue(os.path.exists(file_path))
+        self.assertTrue(os.path.exists(
+            os.path.join('tests', 'test_testprob.cpp')))
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            self.assertIn('#include <iostream>', content)
+
     def test_invalid_language(self) -> None:
         """Test invalid language"""
         template.create_template('invalid_lang', 'testprob')
@@ -54,7 +65,7 @@ class TestTemplate(unittest.TestCase):
     def test_create_python_template_src(self) -> None:
         """Test python src style project structure"""
         template.create_template('python3', 'cold', True)
-        file_path = os.path.join('src', 'cold', 'cold.py')
+        file_path = os.path.join('src', 'cold.py')
         self.assertTrue(os.path.exists(file_path))
         self.assertTrue(os.path.exists(os.path.join('tests', 'test_cold.py')))
         with open(file_path, 'r', encoding='utf-8') as f:

@@ -14,3 +14,4 @@ poetry
 autopep8
 trogon
 click
+pytest-cov
