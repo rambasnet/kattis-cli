@@ -29,6 +29,11 @@ jobs:
           else
             pip install flake8 mypy pytest;
           fi
+      - name: Install package
+        run: |
+          # Install the package so `kattis_cli` is importable in tests
+          python -m pip install --upgrade pip setuptools
+          pip install -e .
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
