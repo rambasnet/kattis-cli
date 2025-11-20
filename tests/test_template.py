@@ -23,12 +23,12 @@ class TestTemplate(unittest.TestCase):
 
     def test_create_python_template(self) -> None:
         """Test python template."""
-        template.create_template('python3', 'testprob')
+        template.create_template('python', 'testprob')
         print(os.path.curdir)
         self.assertTrue(os.path.exists('testprob.py'))
         with open('testprob.py', 'r', encoding='utf-8') as f:
             content = f.read()
-            self.assertIn('def solve():', content)
+            self.assertIn('def main() -> None:', content)
 
     def test_create_java_template(self) -> None:
         """Test Java template."""
@@ -59,5 +59,5 @@ class TestTemplate(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join('tests', 'test_cold.py')))
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
-            self.assertIn('def solve():', content)
+            self.assertIn('def main() -> None:', content)
             self.assertIn('if __name__ == "__main__":', content)

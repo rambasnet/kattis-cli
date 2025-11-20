@@ -1,6 +1,11 @@
+"""Python template
+"""
 import sys
 
-def solve():
+
+def main() -> None:
+    """Main function
+    """
     # Read all lines from stdin
     input_data = sys.stdin.read().split()
     if not input_data:
@@ -10,7 +15,7 @@ def solve():
     # n = int(input_data[0])
 
     # Your solution here
-    pass
+
 
 if __name__ == "__main__":
-    solve()
+    main()

@@ -1,1 +1,2 @@
-recursive-include kattis_templates *.txt
+include kattis_cli/kattis_templates/*
+recursive-include kattis_cli/kattis_templates *

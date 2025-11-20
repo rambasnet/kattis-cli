@@ -1,5 +1,6 @@
 import sys
 
+
 def solve():
     # Read all lines from stdin
     input_data = sys.stdin.read().split()
@@ -11,6 +12,7 @@ def solve():
 
     # Your solution here
     pass
+
 
 if __name__ == "__main__":
     solve()

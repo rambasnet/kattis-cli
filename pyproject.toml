@@ -19,9 +19,14 @@ classifiers = [
 include-package-data = true
 
 [tool.setuptools.package-data]
-kattis_templates = ["*.txt"]
-[tool.poetry]
+# Include the kattis_templates package data inside the installed package
+# (files under src/kattis_cli/kattis_templates)
+kattis_cli = [
+    "kattis_templates/*",
+    "kattis_templates/**",
+]
 
+[tool.poetry]
 [project.urls]
 "Homepage" = "https://github.com/rambasnet/kattis-cli"
 "Bug Tracker" = "https://github.com/rambasnet/kattis-cli/issues"

@@ -3,7 +3,9 @@
 import os
 import shutil
 from pathlib import Path
+import importlib.resources as pkg_resources
 from rich.console import Console
+
 
 LANGUAGE_EXTENSIONS = {
     'c': '.c',
@@ -48,7 +50,7 @@ def create_template(
     """Create a template file for the specified language and problem ID.
 
     Args:
-        language (str): The programming language (e.g., 'python3', 'java', 'cpp').
+        language (str): The programming language (e.g., 'python3', 'cpp').
         problemid (str): The problem ID, used for the filename.
         src_layout (bool): If True, create a src/ directory structure.
     """
@@ -57,17 +59,19 @@ def create_template(
 
     def _check_kattis_templates() -> bool:
         # Always use ~/kattis_templates as the user-facing template directory
-        # On first use, if not present, copy all default templates from package to home
+        # On first use, if not present, copy all default templates from
+        # package data
         if not os.path.isdir(home_templates):
-            package_templates = os.path.abspath(os.path.join(
-                os.path.dirname(__file__), '..', '..', 'kattis_templates'))
             try:
-                shutil.copytree(package_templates, home_templates)
+                # Use importlib.resources to access kattis_templates as a
+                # package resource
+                src = pkg_resources.files("kattis_cli") / "kattis_templates"
+                shutil.copytree(str(src), home_templates)
             except Exception as e:
                 console.print(
-                    f"[bold red]Error:[/bold red] Could not initialize templates: {e}")
+                    f"[bold red]❌ Error:[/bold red] Could not \
+copy templates: {e}")
                 return False
-
         return True
 
     def _get_main_template(language: str) -> str:
@@ -81,7 +85,8 @@ def create_template(
     console = Console()
     if not _check_kattis_templates():
         console.print(
-            f"[bold red]Error:[/bold red] Templates '{language}' not found!")
+            f"[bold red]❌ Error:[/bold red] Templates '{language}' \
+not found in {home_templates}!")
         return
 
     def _copytree_with_problemid(src: str,
@@ -106,7 +111,8 @@ def create_template(
             _copytree_with_problemid(
                 str(lang_src_struct), os.getcwd(), problemid)
             console.print(
-                f"[bold blue]Created:[/bold blue] project structure for {language}.")
+                f"[bold blue]✅ [/bold blue] Created project \
+structure for {language}.")
         target_dir = os.path.join("src", problemid)
     else:
         target_dir = "."
@@ -119,7 +125,8 @@ def create_template(
             template_content = tf.read()
     except OSError:
         console.print(
-            f"[bold red]Error:[/bold red] Could not read template file: {main_template}")
+            f"[bold red] ❌ [/bold red] Could not read \
+template file: {main_template}")
         return
 
     if not main_template:
@@ -146,7 +153,9 @@ exists with content. Skipping.")
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write(content)
         console.print(
-            f"[bold green]Success:[/bold green] Created template '{filepath}' for {language}.")
+            f"[bold green]✅ [/bold green] Created template \
+'{filepath}' for {language}.")
     except OSError as e:
         console.print(
-            f"[bold red]Error:[/bold red] Failed to write file '{filepath}': {e}")
+            f"[bold red]❌ [/bold red] Failed to create template \
+'{filepath}': {e}")

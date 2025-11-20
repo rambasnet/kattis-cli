@@ -48,7 +48,8 @@ def get(problemid: str) -> None:
             f"Problem ID: [bold red]{problemid}[/bold red] not found.")
     else:
         console.print(
-            f"Downloaded samples and metadata: [bold blue]{problemid}[/bold blue]")
+            f"Downloaded samples and metadata: \
+[bold blue]{problemid}[/bold blue]")
 
 
 @main.command(help='Show problem metadata.')

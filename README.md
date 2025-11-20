@@ -110,6 +110,24 @@ kattis info
 
 ![Problem info](./images/kattis_info.png)
 
+### Creating project template
+
+- create project template files for a given programming language
+- src style default templates are created in the home directory under **.kattis-templates** folder
+- you can overwrite/create new templates following the structure provided `kattis_templates`
+- local languages codes supported are:
+  - python3
+  - c++
+  - java
+  - c
+  - nodejs
+
+```bash
+kattis template --help
+# create python3 project template for cold problem
+kattis template -l python3 -p cold -s
+```
+
 ### Test a solution locally
 
 ![Test](images/kattis_test.png)
