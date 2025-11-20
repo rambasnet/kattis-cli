@@ -2,7 +2,7 @@
 # PEP 621 metadata table for tools that expect [project].
 [project]
 name = "kattis-cli"
-version = "1.2.1"
+version = "1.2.2"
 description = "A command-line tool for Kattis"
 readme = "README.md"
 authors = [

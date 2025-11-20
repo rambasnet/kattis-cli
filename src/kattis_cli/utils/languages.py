@@ -154,7 +154,7 @@ def guess_mainfile(
         str: main file
     """
     if len(files) == 1:
-        return files[0]
+        return Path(files[0]).name
     # check .kattis-cli.toml file
     if 'mainfile' in lang_config:
         return lang_config['mainfile'].replace(('{problemid}'), problemid)
