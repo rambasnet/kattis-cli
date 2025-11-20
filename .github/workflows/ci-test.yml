@@ -32,12 +32,12 @@ jobs:
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
-          flake8 --count --show-source --statistics kattis_cli
+          flake8 --count --show-source --statistics src/kattis_cli
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           # flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Check types with mypy
         run: |
-          mypy --strict --allow-untyped-decorators --ignore-missing-imports kattis_cli
-      - name: Test with pytest
+          mypy --strict --allow-untyped-decorators --ignore-missing-imports src/kattis_cli
+      - name: Unittest with pytest
         run: |
-          pytest --verbose tests
+          python -m pytest tests

@@ -6,7 +6,7 @@ FIX_STYLE = autopep8 --in-place --recursive --aggressive --aggressive
 SRC = 'src/kattis_cli'
 
 .PHONY: all
-all: check-style fix-style check-type run-test
+all: check-style fix-style check-type run-test clean
 
 
 .PHONY: check-type
