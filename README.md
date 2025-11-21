@@ -72,11 +72,15 @@ python -m pip install kattis-cli --upgrade
 ## Kattis configuration
 
 - run the following command and enter your Kattis credentials
-- this will create a .kattisrc file in your home directory
+- follow the instructions provided in the terminal
 
 ```bash
 kattis setup
 ```
+
+## Manual Configuration
+
+- see [SETUP.md](./SETUP.md) for detailed instructions to setup kattis-cli
 
 ## Usage
 
