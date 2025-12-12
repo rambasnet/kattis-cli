@@ -2,7 +2,7 @@
 
 Change the __version__ to match in pyproject.toml
 """
-__version__ = '1.2.3'
+__version__ = '1.2.4'
 
 from math import inf
 import os
@@ -80,8 +80,9 @@ def test(
         files: Tuple[str]) -> None:
     """Test solution with sample files.
     """
-    problemid, loc_language, mainclass, _files, root_folder, lang_config = languages.update_args(
-        problemid, language, mainclass, list(files))
+    problemid, loc_language, mainclass, _files, root_folder, lang_config =\
+        languages.update_args(
+            problemid, language, mainclass, list(files))
     # print('After - ', f'{problemid=} {language=} {mainclass=} {_files=}')
     # lang_config = config.parse_config(language)
     if not mainclass:
@@ -116,8 +117,8 @@ def submit(problemid: str, language: str,
            files: Tuple[str]) -> None:
     """Submit a solution to Kattis.
     """
-    problemid, language, mainclass, _files, _, lang_config = languages.update_args(
-        problemid, language, mainclass, list(files))
+    problemid, language, mainclass, _files, _, lang_config = \
+        languages.update_args(problemid, language, mainclass, list(files))
     # Finally, submit the solution
     if not mainclass:
         mainclass = languages.guess_mainfile(
