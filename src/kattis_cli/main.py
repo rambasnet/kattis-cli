@@ -42,20 +42,19 @@ def get(problemid: str) -> None:
         download.load_problem_metadata(problemid)
     except requests.exceptions.InvalidURL:
         console.print(
-            f"Problem ID: [bold red]{problemid}[/bold red] not found.")
+            f"❌ Problem ID: [bold red]{problemid}[/bold red] not found.")
     else:
+        console.print("✅ Metadata downloaded successfully.")
         console.print(
             f"Downloading samples: [bold blue]{problemid}[/bold blue]")
         try:
             download.download_sample_data(problemid)
         except requests.exceptions.InvalidURL:
             console.print(
-                f"Problem ID: [bold red]{problemid}[/bold red] metadata \
-                    not found.")
+                f"❌ Samples not found for Problem ID: [bold red]\
+{problemid}[/bold red].")
         else:
-            console.print(
-                f"Downloaded samples and metadata: \
-    [bold blue]{problemid}[/bold blue]")
+            console.print("✅ Samples downloaded successfully.")
 
 
 @main.command(help='Show problem metadata.')
@@ -81,8 +80,8 @@ def test(
         files: Tuple[str]) -> None:
     """Test solution with sample files.
     """
-    problemid, loc_language, mainclass, _files, root_folder, lang_config = \
-        languages.update_args(problemid, language, mainclass, list(files))
+    problemid, loc_language, mainclass, _files, root_folder, lang_config = languages.update_args(
+        problemid, language, mainclass, list(files))
     # print('After - ', f'{problemid=} {language=} {mainclass=} {_files=}')
     # lang_config = config.parse_config(language)
     if not mainclass:
@@ -117,9 +116,8 @@ def submit(problemid: str, language: str,
            files: Tuple[str]) -> None:
     """Submit a solution to Kattis.
     """
-    problemid, language, mainclass, _files, _, lang_config = \
-        languages.update_args(
-            problemid, language, mainclass, list(files))
+    problemid, language, mainclass, _files, _, lang_config = languages.update_args(
+        problemid, language, mainclass, list(files))
     # Finally, submit the solution
     if not mainclass:
         mainclass = languages.guess_mainfile(
