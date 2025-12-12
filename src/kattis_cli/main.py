@@ -2,7 +2,7 @@
 
 Change the __version__ to match in pyproject.toml
 """
-__version__ = '1.2.2'
+__version__ = '1.2.3'
 
 from math import inf
 import os
@@ -37,25 +37,31 @@ def get(problemid: str) -> None:
     """
     console = Console()
     console.print(
-        f"Downloading samples: [bold blue]{problemid}[/bold blue]")
+        f"Downloading metadata: [bold blue]{problemid}[/bold blue]")
     try:
-        download.download_sample_data(problemid)
-        console.print(
-            f"Downloading metadata: [bold blue]{problemid}[/bold blue]")
         download.load_problem_metadata(problemid)
     except requests.exceptions.InvalidURL:
         console.print(
             f"Problem ID: [bold red]{problemid}[/bold red] not found.")
     else:
         console.print(
-            f"Downloaded samples and metadata: \
-[bold blue]{problemid}[/bold blue]")
+            f"Downloading samples: [bold blue]{problemid}[/bold blue]")
+        try:
+            download.download_sample_data(problemid)
+        except requests.exceptions.InvalidURL:
+            console.print(
+                f"Problem ID: [bold red]{problemid}[/bold red] metadata \
+                    not found.")
+        else:
+            console.print(
+                f"Downloaded samples and metadata: \
+    [bold blue]{problemid}[/bold blue]")
 
 
 @main.command(help='Show problem metadata.')
 @click.option('-p', '--problemid', default='', help='Problem ID.')
 def info(problemid: str) -> None:
-    """Display problem metada.
+    """Display problem metadata.
     """
     ui.show_problem_metadata(problemid)
 
