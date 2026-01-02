@@ -188,7 +188,7 @@ Please download a new .kattisrc file''')
         Submission ID. This builds the full submissions URL from config
         and returns the specific submission URL.
         """
-
+        # Mainclass name containing non-valid characters.
         m = re.search(r'Submission ID: (\d+)', submit_response)
         if m:
             submissions_url = self.get_url(
@@ -395,6 +395,15 @@ Please download a new .kattisrc file''')
             sys.exit(1)
 
         files = sorted(list(set(files)))
+        for f in files:
+            if not os.path.isfile(f):
+                self.console.print(f'File not found:{f}', style='bold red')
+                sys.exit(1)
+            if os.path.basename(f)[0].isdigit():
+                self.console.print(
+                    f'File should not start with a digit: {f}',
+                    style='bold red')
+                sys.exit(1)
 
         submit_url = self.get_url(cfg, 'submissionurl', 'submit')
 
@@ -427,7 +436,7 @@ Please download a new .kattisrc file''')
             sys.exit(1)
 
         plain_result = result.content.decode('utf-8').replace('<br />', '\n')
-        self.console.print(f'[bold blue]{plain_result}[/]')
+        # self.console.print(f'[bold blue]{plain_result}[/]')
 
         submission_url = None
         try:
