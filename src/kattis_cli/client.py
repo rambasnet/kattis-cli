@@ -395,6 +395,9 @@ Please download a new .kattisrc file''')
             sys.exit(1)
 
         files = sorted(list(set(files)))
+        # Filter out __init__.py files
+        files = [f for f in files if os.path.basename(f) != '__init__.py']
+
         for f in files:
             if not os.path.isfile(f):
                 self.console.print(f'File not found:{f}', style='bold red')
