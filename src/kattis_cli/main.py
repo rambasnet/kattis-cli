@@ -2,7 +2,7 @@
 
 Change the __version__ to match in pyproject.toml
 """
-__version__ = '1.2.7'
+__version__ = '1.2.8'
 
 from math import inf
 import os

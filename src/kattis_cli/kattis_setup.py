@@ -7,6 +7,7 @@ original API used by the CLI.
 """
 
 from pathlib import Path
+import configparser
 import requests
 from rich.console import Console
 from rich.prompt import Prompt, Confirm
@@ -46,6 +47,69 @@ class SetupManager:
 
     def __init__(self, client: Optional[KattisClient] = None) -> None:
         self.client = client or KattisClient()
+
+    @staticmethod
+    def _is_valid_kattisrc(content: str) -> bool:
+        """Return True when downloaded text looks like a .kattisrc file."""
+        parser = configparser.ConfigParser()
+        try:
+            parser.read_string(content)
+        except configparser.Error:
+            return False
+        if not parser.has_section('user') or not parser.has_section('kattis'):
+            return False
+        if not parser.has_option('user', 'username'):
+            return False
+        has_secret = (
+            parser.has_option('user', 'token')
+            or parser.has_option('user', 'password')
+        )
+        return has_secret and parser.has_option('kattis', 'hostname')
+
+    def _download_kattisrc(
+            self,
+            cookies: requests.cookies.RequestsCookieJar,
+            username: str = '',
+            password: str = '',
+    ) -> Optional[str]:
+        """Download and validate kattisrc using cookies or a fresh session."""
+        header_candidates = [
+            getattr(self.client, '_HEADERS', {}),
+            _HEADERS,
+        ]
+        for headers in header_candidates:
+            try:
+                res = requests.get(
+                    _KATTISRCURL,
+                    cookies=cookies,
+                    headers=headers,
+                    timeout=10,
+                )
+            except requests.RequestException:
+                continue
+            if res.status_code == 200 and self._is_valid_kattisrc(res.text):
+                return res.text
+
+        # Fallback: build a fresh authenticated web session and retry.
+        if username and password:
+            try:
+                with requests.Session() as session:
+                    session.post(
+                        _LOGIN_URL,
+                        data={'user': username, 'password': password},
+                        headers=_HEADERS,
+                        timeout=10,
+                    )
+                    res = session.get(
+                        _KATTISRCURL,
+                        headers=_HEADERS,
+                        timeout=10,
+                    )
+                if res.status_code == 200 and self._is_valid_kattisrc(res.text):
+                    return res.text
+            except requests.RequestException:
+                pass
+        return None
 
     def check_kattisrc(self) -> bool:
         """Check if kattisrc file exists and is valid.
@@ -98,19 +162,20 @@ class SetupManager:
                 response = self.client.login(_LOGIN_URL, username, password)
                 if response.status_code == 200:
                     console.print(":rocket: Login successful!")
-                    res = requests.get(
-                        _KATTISRCURL,
-                        cookies=response.cookies,
-                        headers=_HEADERS,
-                        timeout=10,
+                    kattisrc_text = self._download_kattisrc(
+                        response.cookies,
+                        username,
+                        password,
                     )
-                    if res.status_code == 200:
+                    if kattisrc_text is not None:
                         with open(_KATTISRC, "w", encoding='utf-8') as f:
-                            f.write(res.text)
+                            f.write(kattisrc_text)
+                        _KATTISRC.chmod(0o600)
                         console.print(
                             f":rocket: kattisrc downloaded and saved to "
                             f"{str(_KATTISRC)}"
                         )
+                        return
                     else:
                         text = (
                             ":loudly_crying_face:\n"
