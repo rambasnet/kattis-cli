@@ -10,6 +10,7 @@ from typing import Any
 import pytest
 
 from kattis_cli.solution_tester import SolutionTester
+import kattis_cli.solution_tester as solution_tester_module
 from kattis_cli import kattis as kattis_module
 from kattis_cli.utils import run_program, utility
 from rich.prompt import Confirm
@@ -48,7 +49,7 @@ def test_testmanager_all_pass_triggers_submit(
     mainclass = "main.py"
     problem_root = _write_sample(tmp_path, "prob", "input\n", "output\n")
     files = ["main.py"]
-    lang_config = {"compile": False}
+    lang_config = {"compile": "", "execute": "python3 {mainfile}"}
 
     def fake_run(lc: Any, mc: Any, infile: str) -> tuple:
         return (0, "output\n", "")
@@ -104,7 +105,7 @@ def test_testmanager_failure_no_submit(
     mainclass = "main.py"
     problem_root = _write_sample(tmp_path, "prob", "input\n", "different\n")
     files = ["main.py"]
-    lang_config = {"compile": False}
+    lang_config = {"compile": "", "execute": "python3 {mainfile}"}
 
     def fake_run(lc: Any, mc: Any, infile: str) -> tuple:
         return (0, "output\n", "")
@@ -132,3 +133,39 @@ def test_testmanager_failure_no_submit(
                     problem_root, files, lang_config)
 
     assert "called" not in called
+
+
+def test_testmanager_prints_run_command(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """The tester prints the resolved run command before executing samples."""
+    problem_root = _write_sample(tmp_path, "prob", "input\n", "different\n")
+    lang_config = {"compile": "", "execute": "python3 {mainfile}"}
+
+    def fake_run(lc: Any, mc: Any, infile: str) -> tuple:
+        return (0, "output\n", "")
+
+    class DummyLive:
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            pass
+
+        def __enter__(self) -> "DummyLive":
+            return self
+
+        def __exit__(self, exc_type: Any, exc: Any, tb: Any) -> bool:
+            return False
+
+    monkeypatch.setattr(run_program, "run", fake_run)
+    monkeypatch.setattr(utility, "check_answer",
+                        lambda expected, ans, accuracy: False)
+    monkeypatch.setattr(solution_tester_module, "Live", DummyLive)
+
+    tm = SolutionTester(client=kattis_module)
+
+    tm.test_samples("prob", "python", "main.py",
+                    problem_root, ["main.py"], lang_config)
+
+    captured = capsys.readouterr()
+    assert "Run command: python3 main.py" in captured.out

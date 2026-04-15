@@ -60,6 +60,21 @@ class TestRunProgram(unittest.TestCase):
                 assert code == 0
                 assert ans == output
 
+    def test_build_cpp_commands(self) -> None:
+        """Build commands from the configured C++ language settings."""
+        cpp_folder = Path(os.path.join('tests', 'cold', 'C++'))
+        files = languages.get_coding_files(cpp_folder)
+        lang_config = config.parse_config('cpp')
+        main_program = languages.guess_mainfile(
+            'cpp', files, 'cold', lang_config)
+
+        compile_command = run_program.build_compile_command(
+            lang_config, files)
+        run_command = run_program.build_run_command(lang_config, main_program)
+
+        assert compile_command[:4] == ['g++', '-g', '-O2', '-std=gnu++23']
+        assert run_command == ['./a.out']
+
     def test_run_cpp(self) -> None:
         """Test run_program.py for C++ programs
         """

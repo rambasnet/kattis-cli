@@ -15,12 +15,12 @@ execute = "python3 {mainfile}"
 mainfile = "{problemid}.py"
 
 [cpp]
-compile = "g++ -g -O2 -std=c++17 -Wall"
+compile = "g++ -g -O2 -std=gnu++23 -static -lrt -Wl,--whole-archive -lpthread -Wl,--no-whole-archive"
 execute = "./a.out"
 mainfile = "{problemid}.cpp"
 
 [c]
-compile = "gcc -g -O2 -std=gnu11 -Wall"
+compile = "gcc -g -O2 -std=gnu23 -static -lm"
 execute = "./a.out"
 mainfile = "{problemid}.c"
 

@@ -2,10 +2,11 @@
 
 Change the __version__ to match in pyproject.toml
 """
-__version__ = '1.2.6'
+__version__ = '1.2.7'
 
 from math import inf
 import os
+from urllib.parse import urlparse
 from typing import Tuple
 from rich.console import Console
 import click
@@ -30,11 +31,24 @@ def main() -> None:
     pass
 
 
+def _normalize_problemid(problemid: str) -> str:
+    """Return a raw Kattis problem id from an id or full problem URL."""
+    parsed = urlparse(problemid)
+    if not parsed.scheme or not parsed.netloc:
+        return problemid
+
+    path_parts = [part for part in parsed.path.split('/') if part]
+    if not path_parts:
+        return problemid
+    return path_parts[-1]
+
+
 @main.command(help='Download sample data & metadata.')
 @click.argument('problemid')
 def get(problemid: str) -> None:
     """Command Line Interface for Kattis.
     """
+    problemid = _normalize_problemid(problemid)
     console = Console()
     console.print(
         f"Downloading metadata: [bold blue]{problemid}[/bold blue]")

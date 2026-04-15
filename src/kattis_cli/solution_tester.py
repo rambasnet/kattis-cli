@@ -7,6 +7,7 @@ delegator for backward compatibility with the previous procedural API.
 from typing import Any, List, Dict, Optional
 from math import inf
 import glob
+import shlex
 import time
 import os
 from pathlib import Path
@@ -77,15 +78,22 @@ class SolutionTester:
             console.print("No sample input files found!", style="bold red")
             exit(1)
         in_files.sort()
+        compile_command = None
         if lang_config['compile']:
+            compile_command = run_program.build_compile_command(
+                lang_config,
+                files,
+            )
             ex_code, ans, error = run_program.compile_program(
                 lang_config,
                 files,
             )
             if ex_code != 0:  # compilation error; exit code
+                console.print(
+                    f"Compile command: {shlex.join(compile_command)}",
+                    style='bold blue')
                 console.print(escape(error), style='bold red')
                 exit(1)
-            console.print('Compiled successfully!', style='bold green')
 
         count = 0
         total = len(in_files)
@@ -94,6 +102,16 @@ class SolutionTester:
         main_src_file = next((f for f in files if f.endswith(mainclass)), None)
         if not main_src_file:
             main_src_file = mainclass
+        run_command = run_program.build_run_command(lang_config, main_src_file)
+
+        if compile_command:
+            console.print(
+                f"Compile command: {shlex.join(compile_command)}",
+                style='bold blue')
+            console.print('Compiled successfully!', style='bold green')
+        console.print(
+            f"Run command: {shlex.join(run_command)}",
+            style='bold blue')
 
         title += f" using {loc_language} 👷‍[/]"
         table.title = title

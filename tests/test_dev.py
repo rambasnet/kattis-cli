@@ -25,6 +25,41 @@ def test_get_success() -> None:
         assert "Downloading metadata" in result.output
 
 
+def test_get_success_with_problem_url() -> None:
+    """Test the 'get' command accepts a full Kattis problem URL."""
+    runner = CliRunner()
+
+    with patch("kattis_cli.download.download_sample_data") as mock_sample, \
+            patch("kattis_cli.download.load_problem_metadata") as mock_meta:
+
+        result = runner.invoke(
+            main.main,
+            ["get", "https://open.kattis.com/problems/lostoncampus"],
+        )
+
+        assert result.exit_code == 0
+        mock_sample.assert_called_once_with("lostoncampus")
+        mock_meta.assert_called_once_with("lostoncampus")
+        assert "lostoncampus" in result.output
+
+
+def test_get_success_with_problem_url_trailing_slash() -> None:
+    """Test the 'get' command ignores a trailing slash in problem URLs."""
+    runner = CliRunner()
+
+    with patch("kattis_cli.download.download_sample_data") as mock_sample, \
+            patch("kattis_cli.download.load_problem_metadata") as mock_meta:
+
+        result = runner.invoke(
+            main.main,
+            ["get", "https://open.kattis.com/problems/lostoncampus/"],
+        )
+
+        assert result.exit_code == 0
+        mock_sample.assert_called_once_with("lostoncampus")
+        mock_meta.assert_called_once_with("lostoncampus")
+
+
 def test_get_invalid_url() -> None:
     """Test the 'get' command of the CLI for invalid URL handling."""
     runner = CliRunner()

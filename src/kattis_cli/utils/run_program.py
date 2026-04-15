@@ -1,8 +1,24 @@
 """Run the program with the given input file and return the output.
 """
 
+import shlex
 import subprocess
 from typing import Tuple, List, Dict, Any
+
+
+def build_compile_command(
+        lang_config: Dict[Any, Any], files: List[str]) -> List[str]:
+    """Build the compile command for the configured language."""
+    command = shlex.split(lang_config['compile'])
+    command.extend(files)
+    return command
+
+
+def build_run_command(
+        lang_config: Dict[Any, Any], mainclass: str) -> List[str]:
+    """Build the run command for the configured language."""
+    return shlex.split(
+        lang_config['execute'].replace("{mainfile}", mainclass))
 
 
 def compile_program(
@@ -13,8 +29,7 @@ def compile_program(
         lang_config (Dict[Any, Any]): language config
         files (List[str]): List of files
     """
-    command = lang_config['compile'].split()
-    command.extend(files)
+    command = build_compile_command(lang_config, files)
     # print(f'{command=}')
     # print(f'{files}')
     # Set the g++ command and its arguments in a list
@@ -48,7 +63,7 @@ def run(lang_config: Dict[Any, Any],
         Tuple[str, str]: program output and error
     """
 
-    program = lang_config['execute'].replace("{mainfile}", mainclass).split()
+    program = build_run_command(lang_config, mainclass)
     # print(f'{program=}')
     code, ans, error = execute(program, input_file)
     return code, ans, error
