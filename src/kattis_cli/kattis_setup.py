@@ -7,13 +7,13 @@ original API used by the CLI.
 """
 
 from pathlib import Path
+import configparser
 import requests
 from rich.console import Console
 from rich.prompt import Prompt, Confirm
 from typing import Optional, Any
 from .client import KattisClient
 from .utils import config
-import configparser
 
 _LOGIN_URL = 'https://open.kattis.com/login'
 _KATTISRCURL = "https://open.kattis.com/download/kattisrc"
@@ -164,19 +164,20 @@ class SetupManager:
                 response = self.client.login(_LOGIN_URL, username, password)
                 if response.status_code == 200:
                     console.print(":rocket: Login successful!")
-                    res = requests.get(
-                        _KATTISRCURL,
-                        cookies=response.cookies,
-                        headers=_HEADERS,
-                        timeout=10,
+                    kattisrc_text = self._download_kattisrc(
+                        response.cookies,
+                        username,
+                        password,
                     )
-                    if res.status_code == 200:
+                    if kattisrc_text is not None:
                         with open(_KATTISRC, "w", encoding='utf-8') as f:
-                            f.write(res.text)
+                            f.write(kattisrc_text)
+                        _KATTISRC.chmod(0o600)
                         console.print(
                             f":rocket: kattisrc downloaded and saved to "
                             f"{str(_KATTISRC)}"
                         )
+                        return
                     else:
                         text = (
                             ":loudly_crying_face:\n"
