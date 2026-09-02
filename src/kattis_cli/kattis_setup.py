@@ -13,6 +13,7 @@ from rich.prompt import Prompt, Confirm
 from typing import Optional, Any
 from .client import KattisClient
 from .utils import config
+import configparser
 
 _LOGIN_URL = 'https://open.kattis.com/login'
 _KATTISRCURL = "https://open.kattis.com/download/kattisrc"
@@ -47,8 +48,6 @@ class SetupManager:
     def __init__(self, client: Optional[KattisClient] = None) -> None:
         self.client = client or KattisClient()
 
-<<<<<<< Updated upstream
-=======
     @staticmethod
     def _is_valid_kattisrc(content: str) -> bool:
         """Return True when downloaded text looks like a .kattisrc file."""
@@ -114,7 +113,6 @@ class SetupManager:
                 pass
         return None
 
->>>>>>> Stashed changes
     def check_kattisrc(self) -> bool:
         """Check if kattisrc file exists and is valid.
 
