@@ -145,7 +145,7 @@ kattis template -l python3 -p cold -s
 
 ```bash
 cd <problem_id>
-kattis test # for exact comparion of answers (string and int)
+kattis test # for exact comparison of answers (works with string and int)
 kattis test -a 6 # Answer accepted upto 6 decimal places of accuracy
 ```
 
