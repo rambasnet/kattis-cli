@@ -171,3 +171,4 @@ __pycache__/
 .cache/
 poetry.lock
 *.h.gch
+*.h.pch
