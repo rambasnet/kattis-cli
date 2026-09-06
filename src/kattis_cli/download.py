@@ -114,29 +114,27 @@ class DownloadManager:
         if title:
             meta_data["title"] = title.text
 
-        data = soup.find("div", {"class": "metadata-grid"})
-        name_mapping = {'metadata-cpu-card': 'cpu_limit',
-                        'metadata-memmory-card': 'mem_limit',
-                        'metadata-difficulty-card': 'difficulty',
-                        }
+        # Parse Difficulty Number
+        element = soup.select_one("span.difficulty_number")
+        if element:
+            difficulty = element.get_text(strip=True)
+            meta_data['difficulty'] = difficulty
 
-        for key, key1 in name_mapping.items():
-            try:
-                value = ''
-                # Use .find() instead of deprecated .findChild()
-                div = data.find('div', {'class': key})  # type: ignore
-                if key == 'metadata-difficulty-card':
-                    cls = {'class': 'difficulty_number'}
-                    span = div.find('span', cls)  # type: ignore
-                    if span:
-                        value += span.text.strip() + ' '  # type: ignore
-                cls2 = {'class': 'text-blue-200'}
-                span = div.find('span', cls2)  # type: ignore
-                if span:
-                    value += span.text.strip()  # type: ignore
-                meta_data[key1] = value
-            except AttributeError:
-                pass
+        # parse Memory Limit
+        element = soup.select_one(
+            ".metadata-memory-card span.text-lg.font-bold.text-link"
+        )
+        if element:
+            mem_limit = element.get_text(strip=True)
+            meta_data['mem_limit'] = mem_limit
+
+        # parse CPU Limit
+        element = soup.select_one(
+            ".metadata-cpu-card span.text-lg.font-bold.text-link"
+        )
+        if element:
+            cpu_limit = element.get_text(strip=True)
+            meta_data['cpu_limit'] = cpu_limit
         return meta_data
 
     def parse_metadata(self, problemid: str, html: str) -> Dict[str, Any]:

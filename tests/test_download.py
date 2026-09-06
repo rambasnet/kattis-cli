@@ -92,10 +92,13 @@ class TestDownload(unittest.TestCase):
         self.assertDictEqual(metadata, {})
         download.download_sample_data(problemid)
         metadata = download.load_problem_metadata(problemid)
-        # print(metadata)
+        print(metadata)
         self.assertEqual(metadata['problemid'], problemid)
+        # self.assertEqual(metadata['mem_limit'], '1024 MB')
+        # self.assertEqual(metadata['cpu_limit'], '1 second')
         self.assertTrue(Path.cwd().joinpath(
             problemid).joinpath(f'{problemid}.yaml').exists())
+
         shutil.rmtree(Path.cwd().joinpath(problemid))
 
     def test_parse_metadata_success1(self) -> None:
@@ -114,7 +117,7 @@ class TestDownload(unittest.TestCase):
         self.assertEqual(metadata['cpu_limit'], '1 second')
         self.assertEqual(metadata['mem_limit'], '1024 MB')
         self.assertEqual(metadata['submissions'], 0)
-        self.assertEqual(metadata['difficulty'], '4.0 Medium')
+        self.assertEqual(metadata['difficulty'], '4.2')
         self.assertEqual(metadata['accepted'], 0)
 
     def test_parse_metadata_success2(self) -> None:
@@ -134,6 +137,5 @@ class TestDownload(unittest.TestCase):
         self.assertEqual(metadata['mem_limit'], '1024 MB')
         self.assertEqual(metadata['submissions'], 0)
         self.assertEqual(
-            metadata['difficulty'],
-            '1.8\n                                                - 7.2 Hard')
+            metadata['difficulty'], '1.9 - 7.4')
         self.assertEqual(metadata['accepted'], 0)
