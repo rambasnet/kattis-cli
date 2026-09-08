@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Bash template
+
+main() {
+    # Read all input from stdin
+    while IFS= read -r line; do
+        :
+        # Your solution here
+    done
+
+}
+
+main

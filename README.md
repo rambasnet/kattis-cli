@@ -125,6 +125,7 @@ kattis info
   - java
   - c
   - nodejs
+  - bash
 
 ```bash
 kattis template --help
@@ -136,10 +137,12 @@ kattis template -l python3 -p cold -s
 
 ![Test](images/kattis_test.png)
 
-- currently the following languages have been tested: Python 3, C++, NodeJS, C, Java
+- currently the following languages have been tested: Python 3, C++, NodeJS, C, Java, Bash
 - make sure CLI compilers are in your PATH
 - make sure python3 files have first line shebang: !/usr/bin/env python3
   - or have extensions .py3
+- make sure bash files have first line shebang: !/usr/bin/env bash
+  - or have extension .sh
 - update the **.kattis-cli.toml** file in your home directory to add more languages
 - see [kattis_cli/.kattis-cli.toml](https://github.com/rambasnet/kattis-cli/blob/main/kattis_cli/.kattis-cli.toml) file for example.
 

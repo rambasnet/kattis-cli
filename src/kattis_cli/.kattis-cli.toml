@@ -33,3 +33,8 @@ mainfile = "{problemid}.js"
 compile = "javac -d ."
 execute = "java -cp . {mainfile}"
 mainfile = "{problemid}"
+
+[bash]
+compile = ""
+execute = "bash {mainfile}"
+mainfile = "{problemid}.sh"

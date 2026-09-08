@@ -12,10 +12,19 @@ import yaml
 from kattis_cli.utils.utility import find_problem_root_folder
 
 _KATTIS_RC = Path.home().joinpath('.kattisrc')
+# packaged config shipped with kattis-cli, used as a fallback when the
+# user's own config file predates a newly supported language (e.g. bash)
+_PACKAGE_CONFIG = Path(__file__).resolve().parent.parent.joinpath(
+    ".kattis-cli.toml")
 
 
 class ConfigError(Exception):
     """Exception raised for errors in the config file."""
+
+
+def _load_toml(path: Path) -> Any:
+    with open(path, "r", encoding='utf-8') as f:
+        return load(f)
 
 
 def parse_config(language: str = '') -> Any:
@@ -29,12 +38,17 @@ def parse_config(language: str = '') -> Any:
         # check in current dir
         config_file = Path.cwd().joinpath(".kattis-cli.toml")
     if config_file.exists():
-        with open(config_file, "r", encoding='utf-8') as f:
-            config_data = load(f)
+        config_data = _load_toml(config_file)
     else:
         raise FileNotFoundError(f"Config file {config_file} not found.")
     if language in config_data:
         return config_data[language]
+    # user's config file may predate this language being added; fall
+    # back to the packaged defaults instead of silently using [default]
+    if language and _PACKAGE_CONFIG.exists():
+        package_data = _load_toml(_PACKAGE_CONFIG)
+        if language in package_data:
+            return package_data[language]
     return config_data['default']
 
 

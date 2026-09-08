@@ -13,6 +13,9 @@ RUN apt update \
 # install c/c++ and build tools
 RUN apt install build-essential -y
 
+# install bats - bash automated testing system
+RUN apt install bats -y
+
 # install java jdk that includes jre and java compiler
 RUN apt install default-jdk -y
 
