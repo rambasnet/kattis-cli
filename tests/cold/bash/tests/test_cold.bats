@@ -35,7 +35,7 @@ setup() {
 }
 
 @test "complete script reads input and prints the answer" {
-    run bash "$BATS_TEST_DIRNAME/src/cold.sh" <<'EOF'
+    run bash "$BATS_TEST_DIRNAME/../src/cold.sh" <<'EOF'
 5
 -10 5 -3 0 8
 EOF
